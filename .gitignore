@@ -1,0 +1,90 @@
+# =========================================
+# 📦 DEPENDENCIES
+# =========================================
+node_modules/
+.pnp/
+.pnp.js
+.npm/
+.yarn/
+.pnpm-store/
+
+# =========================================
+# ⚙️ ENVIRONMENT FILES
+# =========================================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# =========================================
+# 🧪 TESTING & COVERAGE
+# =========================================
+coverage/
+*.lcov
+
+# =========================================
+# 🏗️ BUILD OUTPUTS
+# =========================================
+build/
+dist/
+.next/
+out/
+.cache/
+.tmp/
+
+# =========================================
+# 🪵 LOGS
+# =========================================
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+logs/
+
+# =========================================
+# 💾 RUNTIME DATA
+# =========================================
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# =========================================
+# 🧠 IDE & EDITOR SETTINGS
+# =========================================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# =========================================
+# 💻 OS-GENERATED FILES
+# =========================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# =========================================
+# 🧰 TOOLS & CACHES
+# =========================================
+.eslintcache
+.stylelintcache
+.vscode-test/
+tsconfig.tsbuildinfo
+
+# =========================================
+# 🔧 TEMPORARY FILES & ARCHIVES
+# =========================================
+*.tmp
+*.temp
+*.bak
+*.zip
+*.tar.gz
+*.rar
+*.7z
