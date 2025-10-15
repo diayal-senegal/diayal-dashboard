@@ -4,7 +4,7 @@ import { getNav } from '../navigation/index';
 import { BiLogOutCircle } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from '../store/Reducers/authReducer';
-import { getAllSupportMessages } from '../api/customerSupport';
+import { useNotifications } from '../hooks/useNotifications';
 import logo from '../assets/logo.svg'
 
 const Sidebar = ({showSidebar, setShowSidebar}) => {
@@ -15,34 +15,29 @@ const Sidebar = ({showSidebar, setShowSidebar}) => {
 
     const {pathname} = useLocation()
     const [allNav,setAllNav] = useState([])
-    const [unreadCount, setUnreadCount] = useState(0)
+    const { notifications } = useNotifications()
     
     useEffect(() => {
         const navs = getNav(role)
         setAllNav(navs)
     },[role])
 
-    // Compter les messages non lus
-    const loadUnreadCount = async () => {
-        if (role === 'admin') {
-            try {
-                const data = await getAllSupportMessages();
-                if (data.success) {
-                    const unread = data.messages.filter(msg => msg.status === 'unseen' && !msg.isFromAdmin).length;
-                    setUnreadCount(unread);
-                }
-            } catch (error) {
-                console.error('Erreur lors du comptage des messages:', error);
-            }
+    const getNotificationCount = (path) => {
+        if (!notifications) return 0
+        
+        switch(path) {
+            case '/admin/dashboard/newsletter':
+                return notifications.newsletter || 0
+            case '/admin/dashboard/vendor-teaser':
+                return notifications.vendorTeaser || 0
+            case '/admin/dashboard/customer-support':
+                return notifications.support || 0
+            case '/admin/dashboard/contact-messages':
+                return notifications.contact || 0
+            default:
+                return 0
         }
-    };
-
-    useEffect(() => {
-        loadUnreadCount();
-        // Actualiser toutes les 30 secondes
-        const interval = setInterval(loadUnreadCount, 30000);
-        return () => clearInterval(interval);
-    }, [role]);
+    }
 
 
     return (
@@ -64,9 +59,9 @@ const Sidebar = ({showSidebar, setShowSidebar}) => {
                        <Link to={n.path} className={`${pathname === n.path ? 'bg-blue-600 shadow-indigo-500/50 text-white duration-500' : 'text-[#030811] font-bold duration-200 ' } px-[12px] py-[9px] rounded-sm flex justify-start items-center gap-[12px] hover:pl-4 transition-all w-full mb-1 `} >
                         <span>{n.icon}</span>
                         <span className="flex-1">{n.title}</span>
-                        {n.path === '/admin/dashboard/customer-support' && unreadCount > 0 && (
+                        {getNotificationCount(n.path) > 0 && (
                             <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full min-w-[20px] h-5 flex items-center justify-center">
-                                {unreadCount > 99 ? '99+' : unreadCount}
+                                {getNotificationCount(n.path) > 99 ? '99+' : getNotificationCount(n.path)}
                             </span>
                         )}
                         </Link>

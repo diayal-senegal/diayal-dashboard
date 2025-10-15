@@ -14,7 +14,8 @@ const PublishedBannersPage = lazy(()=> import('../../views/admin/PublishedBanner
 const Newsletter = lazy(()=> import('../../views/admin/Newsletter'))
 const VendorTeaser = lazy(()=> import('../../views/admin/VendorTeaser'))
 const DealsManager = lazy(()=> import('../../views/admin/DealsManager'))
-const CustomerSupport = lazy(()=> import('../../views/admin/CustomerSupport'))  
+const CustomerSupport = lazy(()=> import('../../views/admin/CustomerSupport'))
+const ContactMessages = lazy(()=> import('../../views/admin/ContactMessages'))  
 
 export const adminRoutes = [
     {
@@ -105,6 +106,11 @@ export const adminRoutes = [
     {
         path: 'admin/dashboard/customer-support',
         element : <CustomerSupport/> ,
+        role : 'admin'
+    },
+    {
+        path: 'admin/dashboard/contact-messages',
+        element : <ContactMessages/> ,
         role : 'admin'
     },
  

@@ -17,6 +17,7 @@ import { MdVerified } from "react-icons/md";
 import { MdPublish } from "react-icons/md";
 import { MdEmail } from "react-icons/md";
 import { FaHeadset } from "react-icons/fa";
+import { FaEnvelope } from "react-icons/fa";
 
 export const allNav = [
     {
@@ -116,6 +117,13 @@ export const allNav = [
         icon : <FaHeadset />,
         role : 'admin',
         path: '/admin/dashboard/customer-support'
+    },
+    {
+        id : 26,
+        title : 'Messages Contact',
+        icon : <FaEnvelope />,
+        role : 'admin',
+        path: '/admin/dashboard/contact-messages'
     },
     {
         id : 9,
