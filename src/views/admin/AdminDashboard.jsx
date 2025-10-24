@@ -9,6 +9,7 @@ import seller from '../../assets/seller.png'
 import { get_admin_dashboard_data } from '../../store/Reducers/dashboardReducer';
 import moment from 'moment';
 import toast from 'react-hot-toast';
+import api from '../../api/api';
 
 const AdminDashboard = () => {
     const dispatch = useDispatch()
@@ -24,25 +25,48 @@ const AdminDashboard = () => {
         sellers: { current: 0, previous: 0, trend: 0 },
         commissions: { current: 0, previous: 0, trend: 0 }
     })
+    const [commissionStats, setCommissionStats] = useState({
+        totalCommissions: 0,
+        pendingCommissions: 0,
+        collectedCommissions: 0
+    })
     const [chartData, setChartData] = useState({
         orders: [],
         revenue: [],
         sellers: []
     })
 
+    const loadCommissionStats = async () => {
+        try {
+            const response = await api.get('/admin/commission-stats')
+            const stats = response.data.totalStats || {
+                totalCommissions: 0,
+                pendingCommissions: 0,
+                collectedCommissions: 0
+            }
+            setCommissionStats(stats)
+            return stats
+        } catch (error) {
+            console.error('Erreur chargement commissions:', error)
+            return { totalCommissions: 0, pendingCommissions: 0, collectedCommissions: 0 }
+        }
+    }
+
     useEffect(() => {
         dispatch(get_admin_dashboard_data())
+        loadCommissionStats()
         
         // Utiliser les vraies données de la base de données
-        const generateRealData = () => {
+        const generateRealData = async () => {
             // Données réelles depuis Redux
             const realSales = totalSale || 0
             const realOrders = totalOrder || 0
             const realProducts = totalProduct || 0
             const realSellers = totalSeller || 0
             
-            // Calculer les commissions réelles (10% du chiffre d'affaires)
-            const currentCommissions = Math.floor(realSales * 0.10) // 10% de commission sur chaque vente
+            // Charger les vraies commissions depuis l'API
+            const commissionData = await loadCommissionStats()
+            const currentCommissions = commissionData.totalCommissions || 0
             const previousCommissions = Math.floor(currentCommissions * 0.92) // Estimation mois précédent
             const commissionsTrend = previousCommissions > 0 ? ((currentCommissions - previousCommissions) / previousCommissions * 100).toFixed(1) : '0.0'
             
@@ -326,48 +350,58 @@ const AdminDashboard = () => {
 
             {/* Stats Cards */}
             <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-8'>
-                <StatCard
-                    title="Chiffre d'Affaires"
-                    value={dashboardData.sales.current}
-                    trend={dashboardData.sales.trend}
-                    icon={<MdOutlineCurrencyFranc className='text-2xl text-white' />}
-                    bgColor='bg-gradient-to-br from-blue-50 to-blue-100'
-                    iconBg='bg-gradient-to-br from-blue-500 to-blue-600'
-                    suffix=' FCFA'
-                />
-                <StatCard
-                    title='Commandes'
-                    value={dashboardData.orders.current}
-                    trend={dashboardData.orders.trend}
-                    icon={<FaShoppingCart className='text-2xl text-white' />}
-                    bgColor='bg-gradient-to-br from-green-50 to-green-100'
-                    iconBg='bg-gradient-to-br from-green-500 to-green-600'
-                />
-                <StatCard
-                    title='Produits'
-                    value={totalProduct}
-                    trend={dashboardData.products.trend}
-                    icon={<MdProductionQuantityLimits className='text-2xl text-white' />}
-                    bgColor='bg-gradient-to-br from-purple-50 to-purple-100'
-                    iconBg='bg-gradient-to-br from-purple-500 to-purple-600'
-                />
-                <StatCard
-                    title='Vendeurs Actifs'
-                    value={dashboardData.sellers.current}
-                    trend={dashboardData.sellers.trend}
-                    icon={<FaUsers className='text-2xl text-white' />}
-                    bgColor='bg-gradient-to-br from-orange-50 to-orange-100'
-                    iconBg='bg-gradient-to-br from-orange-500 to-orange-600'
-                />
-                <StatCard
-                    title='Commissions'
-                    value={dashboardData.commissions.current}
-                    trend={dashboardData.commissions.trend}
-                    icon={<FaPercent className='text-2xl text-white' />}
-                    bgColor='bg-gradient-to-br from-emerald-50 to-emerald-100'
-                    iconBg='bg-gradient-to-br from-emerald-500 to-emerald-600'
-                    suffix=' FCFA'
-                />
+                <Link to='/admin/dashboard/revenue-analytics' className='block'>
+                    <StatCard
+                        title="Chiffre d'Affaires"
+                        value={dashboardData.sales.current}
+                        trend={dashboardData.sales.trend}
+                        icon={<MdOutlineCurrencyFranc className='text-2xl text-white' />}
+                        bgColor='bg-gradient-to-br from-blue-50 to-blue-100'
+                        iconBg='bg-gradient-to-br from-blue-500 to-blue-600'
+                        suffix=' FCFA'
+                    />
+                </Link>
+                <Link to='/admin/dashboard/orders' className='block'>
+                    <StatCard
+                        title='Commandes'
+                        value={dashboardData.orders.current}
+                        trend={dashboardData.orders.trend}
+                        icon={<FaShoppingCart className='text-2xl text-white' />}
+                        bgColor='bg-gradient-to-br from-green-50 to-green-100'
+                        iconBg='bg-gradient-to-br from-green-500 to-green-600'
+                    />
+                </Link>
+                <Link to='/admin/dashboard/category' className='block'>
+                    <StatCard
+                        title='Produits'
+                        value={totalProduct}
+                        trend={dashboardData.products.trend}
+                        icon={<MdProductionQuantityLimits className='text-2xl text-white' />}
+                        bgColor='bg-gradient-to-br from-purple-50 to-purple-100'
+                        iconBg='bg-gradient-to-br from-purple-500 to-purple-600'
+                    />
+                </Link>
+                <Link to='/admin/dashboard/sellers' className='block'>
+                    <StatCard
+                        title='Vendeurs Actifs'
+                        value={dashboardData.sellers.current}
+                        trend={dashboardData.sellers.trend}
+                        icon={<FaUsers className='text-2xl text-white' />}
+                        bgColor='bg-gradient-to-br from-orange-50 to-orange-100'
+                        iconBg='bg-gradient-to-br from-orange-500 to-orange-600'
+                    />
+                </Link>
+                <Link to='/admin/dashboard/commissions' className='block'>
+                    <StatCard
+                        title='Commissions'
+                        value={commissionStats.totalCommissions}
+                        trend={dashboardData.commissions.trend}
+                        icon={<FaPercent className='text-2xl text-white' />}
+                        bgColor='bg-gradient-to-br from-emerald-50 to-emerald-100'
+                        iconBg='bg-gradient-to-br from-emerald-500 to-emerald-600'
+                        suffix=' FCFA'
+                    />
+                </Link>
             </div>
 
             {/* Notification Cards */}

@@ -15,7 +15,9 @@ const Newsletter = lazy(()=> import('../../views/admin/Newsletter'))
 const VendorTeaser = lazy(()=> import('../../views/admin/VendorTeaser'))
 const DealsManager = lazy(()=> import('../../views/admin/DealsManager'))
 const CustomerSupport = lazy(()=> import('../../views/admin/CustomerSupport'))
-const ContactMessages = lazy(()=> import('../../views/admin/ContactMessages'))  
+const ContactMessages = lazy(()=> import('../../views/admin/ContactMessages'))
+const CommissionsPage = lazy(()=> import('../../views/admin/CommissionsPage'))
+const RevenueAnalytics = lazy(()=> import('../../views/admin/RevenueAnalytics'))  
 
 export const adminRoutes = [
     {
@@ -111,6 +113,16 @@ export const adminRoutes = [
     {
         path: 'admin/dashboard/contact-messages',
         element : <ContactMessages/> ,
+        role : 'admin'
+    },
+    {
+        path: 'admin/dashboard/commissions',
+        element : <CommissionsPage/> ,
+        role : 'admin'
+    },
+    {
+        path: 'admin/dashboard/revenue-analytics',
+        element : <RevenueAnalytics/> ,
         role : 'admin'
     },
  

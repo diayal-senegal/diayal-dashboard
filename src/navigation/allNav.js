@@ -18,6 +18,7 @@ import { MdPublish } from "react-icons/md";
 import { MdEmail } from "react-icons/md";
 import { FaHeadset } from "react-icons/fa";
 import { FaEnvelope } from "react-icons/fa";
+import { FaMoneyBillWave } from "react-icons/fa";
 
 export const allNav = [
     {
@@ -124,6 +125,13 @@ export const allNav = [
         icon : <FaEnvelope />,
         role : 'admin',
         path: '/admin/dashboard/contact-messages'
+    },
+    {
+        id : 27,
+        title : 'Commissions',
+        icon : <FaMoneyBillWave />,
+        role : 'admin',
+        path: '/admin/dashboard/commissions'
     },
     {
         id : 9,
