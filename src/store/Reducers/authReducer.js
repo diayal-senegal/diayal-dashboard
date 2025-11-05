@@ -157,6 +157,32 @@ export const profile_info_add = createAsyncThunk(
             }
         }
     )
+    // end method
+
+    export const seller_forgot_password = createAsyncThunk(
+        'auth/seller_forgot_password',
+        async(email, {rejectWithValue, fulfillWithValue}) => {
+            try {
+                const {data} = await api.post('/seller-forgot-password', { email }, {withCredentials: true})
+                return fulfillWithValue(data)
+            } catch (error) {
+                return rejectWithValue(error.response.data)
+            }
+        }
+    )
+    // end method
+
+    export const seller_reset_password = createAsyncThunk(
+        'auth/seller_reset_password',
+        async(info, {rejectWithValue, fulfillWithValue}) => {
+            try {
+                const {data} = await api.post('/seller-reset-password', info, {withCredentials: true})
+                return fulfillWithValue(data)
+            } catch (error) {
+                return rejectWithValue(error.response.data)
+            }
+        }
+    )
     // end method 
 
  
@@ -256,6 +282,32 @@ export const authReducer = createSlice({
         .addCase(change_password.fulfilled, (state,action) => {
             state.loader = false;
             state.successMessage = action.payload 
+        })
+
+        /// forgot password
+        .addCase(seller_forgot_password.pending, (state) => {
+            state.loader = true;
+        })
+        .addCase(seller_forgot_password.rejected, (state, { payload }) => {
+            state.loader = false;
+            state.errorMessage = payload?.error || payload?.message || 'Erreur lors de l\'envoi';
+        })
+        .addCase(seller_forgot_password.fulfilled, (state, { payload }) => {
+            state.loader = false;
+            state.successMessage = payload.message;
+        })
+
+        /// reset password
+        .addCase(seller_reset_password.pending, (state) => {
+            state.loader = true;
+        })
+        .addCase(seller_reset_password.rejected, (state, { payload }) => {
+            state.loader = false;
+            state.errorMessage = payload?.error || payload?.message || 'Erreur lors de la réinitialisation';
+        })
+        .addCase(seller_reset_password.fulfilled, (state, { payload }) => {
+            state.loader = false;
+            state.successMessage = payload.message;
         });
 
 

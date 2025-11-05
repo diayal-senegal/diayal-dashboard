@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { syncBanners } from '../../utils/syncBanners';
 
 const PublishedBannersPage = () => {
+
     const [publishedBanners, setPublishedBanners] = useState([]);
     const [selectedBanner, setSelectedBanner] = useState(null);
     const [showModal, setShowModal] = useState(false);
