@@ -124,7 +124,12 @@ const AddBanner = () => {
             // Créer FormData pour l'API
             const formData = new FormData();
             formData.append('mainban', image);
-            formData.append('productId', productId);
+            
+            // Ajouter productId seulement s'il existe
+            if (productId && productId !== 'undefined') {
+                formData.append('productId', productId);
+            }
+            
             formData.append('bannerType', bannerType);
             formData.append('price', bannerTypes[bannerType].price);
             
