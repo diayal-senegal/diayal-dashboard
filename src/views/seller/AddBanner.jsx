@@ -54,7 +54,7 @@ const AddBanner = () => {
             toast.error(errorMessage)
             dispatch(messageClear())
         }
-    },[successMessage,errorMessage])
+    },[successMessage,errorMessage, dispatch])
 
     const imageHandle = (e) => {
         const files = e.target.files 
@@ -121,60 +121,24 @@ const AddBanner = () => {
     
     const submitBanner = () => {
         try {
-            // Vérifier que l'image est bien convertie en base64
-            if (!imageShow || !imageShow.startsWith('data:')) {
-                toast.error('Erreur lors du traitement de l\'image. Veuillez réessayer.')
-                return
-            }
+            // Créer FormData pour l'API
+            const formData = new FormData();
+            formData.append('mainban', image);
+            formData.append('productId', productId);
+            formData.append('bannerType', bannerType);
+            formData.append('price', bannerTypes[bannerType].price);
             
-            // Simulation temporaire jusqu'à ce que le backend soit adapté
-            const bannerData = {
-                _id: 'temp_' + Date.now(),
-                sellerId: userInfo?._id || 'current_seller',
-                sellerName: userInfo?.name || 'Vendeur',
-                title: `Bannière ${bannerTypes[bannerType].name}`,
-                bannerType: bannerType,
-                price: bannerTypes[bannerType].price,
-                image: imageShow, // Maintenant en base64, persistant
-                status: 'pending_validation',
-                submittedAt: new Date().toLocaleString(),
-                productId: productId || null,
-                productSlug: productId ? `product-${productId}` : null, // Générer un slug
-                // Navigation vers les vraies routes
-                targetUrl: productId ? `/product/details/${productId}` : '/shops',
-                // Informations de navigation
-                shopName: userInfo?.shopInfo?.shopName || userInfo?.name || 'Ma Boutique',
-                shopUrl: '/shops', // Page des boutiques
-                productsUrl: '/products', // Page des produits
-                clickAction: productId ? 'product' : 'shops' // Naviguer vers produit ou boutiques
-            }
-            
-            // Ajouter la bannière aux bannières en attente (simulation)
-            const currentPending = JSON.parse(localStorage.getItem('pendingBanners') || '[]')
-            currentPending.push(bannerData)
-            localStorage.setItem('pendingBanners', JSON.stringify(currentPending))
-            
-            // Déclencher un événement personnalisé pour notifier les autres composants
-            window.dispatchEvent(new CustomEvent('bannerAdded', { detail: bannerData }))
-            console.log('Bannière ajoutée:', bannerData) // Debug
-            
-            // Message de succès
-            toast.success(
-                `Bannière ${bannerTypes[bannerType].name} soumise avec succès ! ` +
-                `Statut: En attente de validation (${bannerTypes[bannerType].validation})`
-            )
+            // Utiliser Redux pour envoyer à l'API (logique originale)
+            dispatch(add_banner(formData));
             
             // Réinitialiser le formulaire
-            setImage('')
-            setImageShow('')
-            setBannerType('gratuit')
-            
-            // TODO: Remplacer par l'appel Redux réel quand le backend sera prêt
-            // dispatch(add_banner(formData))
+            setImage('');
+            setImageShow('');
+            setBannerType('gratuit');
             
         } catch (error) {
-            console.error('Erreur lors de la soumission:', error)
-            toast.error('Erreur lors de la soumission de la bannière')
+            console.error('Erreur lors de la soumission:', error);
+            toast.error('Erreur lors de la soumission de la bannière');
         }
     }
     
