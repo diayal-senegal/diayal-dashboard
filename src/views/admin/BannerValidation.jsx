@@ -15,16 +15,21 @@ const BannerValidation = () => {
         const loadBanners = async () => {
             try {
                 // Charger depuis l'API
-                const response = await fetch('https://api.diayal.sn/api/pending-banners');
+                const response = await fetch('https://api.diayal.sn/api/banners');
                 if (response.ok) {
                     const data = await response.json();
-                    setLocalBanners(data.banners || []);
+                    // Filtrer seulement les bannières en attente
+                    const pendingBanners = (data.banners || []).filter(banner => 
+                        banner.status === 'pending' || banner.status === 'pending_validation'
+                    );
+                    setLocalBanners(pendingBanners);
                 } else {
                     // Fallback vers Redux
                     dispatch(get_pending_banners());
                 }
             } catch (error) {
                 console.log('Erreur chargement bannières:', error);
+                toast.error('Erreur lors du chargement des bannières');
                 // Fallback vers Redux
                 dispatch(get_pending_banners());
             }
