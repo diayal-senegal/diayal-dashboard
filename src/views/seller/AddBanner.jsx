@@ -125,6 +125,9 @@ const AddBanner = () => {
             const formData = new FormData();
             formData.append('mainban', image);
             
+            // Ajouter sellerId (obligatoire)
+            formData.append('sellerId', userInfo?._id || '');
+            
             // Ajouter productId seulement s'il existe
             if (productId && productId !== 'undefined') {
                 formData.append('productId', productId);
