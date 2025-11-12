@@ -12,14 +12,27 @@ const BannerValidation = () => {
     const [localBanners, setLocalBanners] = useState([]);
 
     useEffect(() => {
-        const loadBanners = () => {
-            const stored = JSON.parse(localStorage.getItem('pendingBanners') || '[]')
-            setLocalBanners(stored.filter(banner => banner.status === 'pending_validation'))
+        const loadBanners = async () => {
+            try {
+                // Charger depuis l'API
+                const response = await fetch('https://api.diayal.sn/api/pending-banners');
+                if (response.ok) {
+                    const data = await response.json();
+                    setLocalBanners(data.banners || []);
+                } else {
+                    // Fallback vers Redux
+                    dispatch(get_pending_banners());
+                }
+            } catch (error) {
+                console.log('Erreur chargement bannières:', error);
+                // Fallback vers Redux
+                dispatch(get_pending_banners());
+            }
         }
         loadBanners()
-        const interval = setInterval(loadBanners, 2000)
+        const interval = setInterval(loadBanners, 5000)
         return () => clearInterval(interval)
-    }, [])
+    }, [dispatch])
 
     useEffect(() => {
         if (successMessage) {
@@ -33,97 +46,21 @@ const BannerValidation = () => {
     }, [successMessage, errorMessage, dispatch])
 
     const handleApprove = (bannerId) => {
-        const allBanners = JSON.parse(localStorage.getItem('pendingBanners') || '[]')
-        const bannerToApprove = allBanners.find(banner => banner._id === bannerId)
+        // Utiliser Redux pour approuver la bannière
+        dispatch(validate_banner({ bannerId, status: 'approved' }));
         
-        const updatedBanners = allBanners.map(banner => 
-            banner._id === bannerId 
-                ? { ...banner, status: 'approved', approvedAt: new Date().toLocaleString() }
-                : banner
-        )
-        localStorage.setItem('pendingBanners', JSON.stringify(updatedBanners))
-        
-        // Ajouter à la liste des bannières publiées
-        const publishedBanners = JSON.parse(localStorage.getItem('publishedBanners') || '[]')
-        const newBanner = {
-            ...bannerToApprove,
-            status: 'approved',
-            approvedAt: new Date().toLocaleString(),
-            publishedAt: new Date().toLocaleString()
-        }
-        publishedBanners.push(newBanner)
-        
-        // Sauvegarder localement
-        const limitedBanners = publishedBanners.slice(-10)
-        localStorage.setItem('publishedBanners', JSON.stringify(limitedBanners))
-        localStorage.setItem('frontendBanners', JSON.stringify(limitedBanners))
-        
-        // Notification pour le vendeur
-        const sellerNotifications = JSON.parse(localStorage.getItem('sellerNotifications') || '[]')
-        sellerNotifications.push({
-            id: 'notif_' + Date.now(),
-            type: 'banner_approved',
-            title: 'Bannière approuvée !',
-            message: `Votre bannière ${bannerToApprove.bannerType} a été approuvée et publiée.`,
-            timestamp: new Date().toLocaleString(),
-            read: false
-        })
-        localStorage.setItem('sellerNotifications', JSON.stringify(sellerNotifications))
-        
-        // Envoyer automatiquement au frontend
-        try {
-            const frontendWindow = window.open('http://localhost:3000', 'frontend');
-            setTimeout(() => {
-                if (frontendWindow) {
-                    frontendWindow.postMessage({
-                        type: 'SYNC_BANNERS',
-                        banners: limitedBanners
-                    }, 'http://localhost:3000');
-                    console.log('✅ Bannière envoyée au frontend automatiquement');
-                }
-            }, 1000);
-        } catch (error) {
-            console.log('Erreur envoi frontend:', error);
-        }
-        
-        // Déclencher événements
-        window.dispatchEvent(new CustomEvent('bannerApproved', { detail: bannerToApprove }))
-        window.dispatchEvent(new CustomEvent('sellerNotification', { detail: { type: 'approved' } }))
-        
+        // Mettre à jour l'état local
         setLocalBanners(prev => prev.filter(banner => banner._id !== bannerId))
         setShowModal(false)
-        toast.success('Bannière approuvée et publiée !')
     };
 
     const handleReject = (bannerId, reason = 'Non conforme aux standards') => {
-        const allBanners = JSON.parse(localStorage.getItem('pendingBanners') || '[]')
-        const bannerToReject = allBanners.find(banner => banner._id === bannerId)
+        // Utiliser Redux pour rejeter la bannière
+        dispatch(validate_banner({ bannerId, status: 'rejected', reason }));
         
-        const updatedBanners = allBanners.map(banner => 
-            banner._id === bannerId 
-                ? { ...banner, status: 'rejected', rejectedAt: new Date().toLocaleString(), rejectionReason: reason }
-                : banner
-        )
-        localStorage.setItem('pendingBanners', JSON.stringify(updatedBanners))
-        
-        // Notification pour le vendeur
-        const sellerNotifications = JSON.parse(localStorage.getItem('sellerNotifications') || '[]')
-        sellerNotifications.push({
-            id: 'notif_' + Date.now(),
-            type: 'banner_rejected',
-            title: 'Bannière rejetée',
-            message: `Votre bannière ${bannerToReject.bannerType} a été rejetée. Raison: ${reason}`,
-            timestamp: new Date().toLocaleString(),
-            read: false
-        })
-        localStorage.setItem('sellerNotifications', JSON.stringify(sellerNotifications))
-        
-        // Déclencher événement
-        window.dispatchEvent(new CustomEvent('sellerNotification', { detail: { type: 'rejected' } }))
-        
+        // Mettre à jour l'état local
         setLocalBanners(prev => prev.filter(banner => banner._id !== bannerId))
         setShowModal(false)
-        toast.success('Bannière rejetée')
     };
 
     const openModal = (banner) => {
