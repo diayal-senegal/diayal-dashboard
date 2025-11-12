@@ -121,12 +121,19 @@ const AddBanner = () => {
     
     const submitBanner = () => {
         try {
+            // Vérifier que userInfo existe
+            if (!userInfo || !userInfo._id) {
+                toast.error('Erreur: Informations utilisateur manquantes. Veuillez vous reconnecter.');
+                return;
+            }
+            
+            console.log('UserInfo:', userInfo); // Debug
+            console.log('SellerId:', userInfo._id); // Debug
+            
             // Créer FormData pour l'API
             const formData = new FormData();
             formData.append('mainban', image);
-            
-            // Ajouter sellerId (obligatoire)
-            formData.append('sellerId', userInfo?._id || '');
+            formData.append('sellerId', userInfo._id);
             
             // Ajouter productId seulement s'il existe
             if (productId && productId !== 'undefined') {
@@ -135,6 +142,11 @@ const AddBanner = () => {
             
             formData.append('bannerType', bannerType);
             formData.append('price', bannerTypes[bannerType].price);
+            
+            console.log('FormData contents:'); // Debug
+            for (let pair of formData.entries()) {
+                console.log(pair[0] + ': ' + pair[1]);
+            }
             
             // Utiliser Redux pour envoyer à l'API (logique originale)
             dispatch(add_banner(formData));
