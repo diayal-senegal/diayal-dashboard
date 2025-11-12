@@ -6,7 +6,7 @@ export const add_banner = createAsyncThunk(
     async(info ,{rejectWithValue, fulfillWithValue}) => { 
         try {
              
-            const {data} = await api.post(`/banner/add`,info,{withCredentials: true})  
+            const {data} = await api.post(`/banners`,info,{withCredentials: true})  
             return fulfillWithValue(data)
         } catch (error) { 
             return rejectWithValue(error.response.data)
@@ -22,7 +22,7 @@ export const add_banner = createAsyncThunk(
     async(productId ,{rejectWithValue, fulfillWithValue}) => { 
         try {
              
-            const {data} = await api.get(`/banner/get/${productId}`,{withCredentials: true})  
+            const {data} = await api.get(`/banners/${productId}`,{withCredentials: true})  
             return fulfillWithValue(data)
         } catch (error) { 
             return rejectWithValue(error.response.data)
@@ -37,7 +37,7 @@ export const add_banner = createAsyncThunk(
     async({bannerId,info} ,{rejectWithValue, fulfillWithValue}) => { 
         try {
              
-            const {data} = await api.put(`/banner/update/${bannerId}`,info,{withCredentials: true})  
+            const {data} = await api.put(`/banners/${bannerId}`,info,{withCredentials: true})  
             return fulfillWithValue(data)
         } catch (error) { 
             return rejectWithValue(error.response.data)
