@@ -72,8 +72,8 @@ const AddBanner = () => {
                     const canvas = document.createElement('canvas')
                     const ctx = canvas.getContext('2d')
                     
-                    // Redimensionner pour réduire la taille
-                    const maxWidth = 800
+                    // Redimensionner pour format bannière (ratio 3:1)
+                    const maxWidth = 1200
                     const maxHeight = 400
                     let { width, height } = img
                     
@@ -240,7 +240,9 @@ const AddBanner = () => {
          <div className='mb-4'>
             <label className='flex justify-center items-center flex-col h-[180px] cursor-pointer border border-dashed hover:border-red-500 w-full text-white' htmlFor="image">
                 <span className='text-4xl'><FaRegImage /></span>
-                <span>Sélect image bannière </span>
+                <span>Sélectionner image bannière</span>
+                <span className='text-xs mt-2 text-gray-300'>Format recommandé: 1200x400px (ratio 3:1)</span>
+                <span className='text-xs text-gray-300'>Formats acceptés: JPG, PNG, WebP</span>
             </label>
             <input required onChange={imageHandle} className='hidden' type="file" id='image' />
             </div>
