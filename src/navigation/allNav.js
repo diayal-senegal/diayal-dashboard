@@ -19,6 +19,7 @@ import { MdEmail } from "react-icons/md";
 import { FaHeadset } from "react-icons/fa";
 import { FaEnvelope } from "react-icons/fa";
 import { FaMoneyBillWave } from "react-icons/fa";
+import { FaBell } from "react-icons/fa";
 
 export const allNav = [
     {
@@ -177,14 +178,14 @@ export const allNav = [
     },
     {
         id : 15,
-        title : 'Discussions clients',
+        title : 'Messages clients',
         icon : <IoChatbubbles />,
         role : 'seller',
         path: '/seller/dashboard/chat-customer'
     },
     {
         id : 16,
-        title : 'Discussions support',
+        title : 'Aide & support',
         icon : <BsFillChatQuoteFill />,
         role : 'seller',
         path: '/seller/dashboard/chat-support'
@@ -209,5 +210,12 @@ export const allNav = [
         icon : <RiCoupon3Line />,
         role : 'seller',
         path: '/seller/dashboard/promotions'
+    },
+    {
+        id : 28,
+        title : 'Notifications',
+        icon : <FaBell />,
+        role : 'seller',
+        path: '/seller/dashboard/notifications'
     }
 ]

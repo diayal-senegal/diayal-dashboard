@@ -14,7 +14,8 @@ const OrderDetails = lazy(()=> import('../../views/seller/OrderDetails'))
 const Pending = lazy(()=> import('./../../views/Pending')) 
 const Deactive = lazy(()=> import('./../../views/Deactive')) 
 const AddBanner = lazy(()=> import('../../views/seller/AddBanner'))
-const Promotions = lazy(()=> import('../../views/seller/Promotions')) 
+const Promotions = lazy(()=> import('../../views/seller/Promotions'))
+const Notifications = lazy(()=> import('../../views/seller/Notifications')) 
 
 export const sellerRoutes = [
     
@@ -123,6 +124,12 @@ export const sellerRoutes = [
         element : <Promotions/>,
         role : 'seller',
         status : 'active'
+    },
+    {
+        path: '/seller/dashboard/notifications',
+        element : <Notifications/>,
+        role : 'seller',
+        visibility : ['active','deactive','pending']
     }
 
 ]

@@ -125,7 +125,55 @@ export const get_seller = createAsyncThunk(
 
   // End Method 
 
- 
+// Actions pour les notifications
+export const get_seller_notifications = createAsyncThunk(
+    'seller/get_seller_notifications',
+    async(_, {rejectWithValue, fulfillWithValue}) => {
+        try {
+            const {data} = await api.get('/notifications', {withCredentials: true});
+            return fulfillWithValue(data);
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
+export const mark_notification_read = createAsyncThunk(
+    'seller/mark_notification_read',
+    async(notificationId, {rejectWithValue, fulfillWithValue}) => {
+        try {
+            const {data} = await api.put(`/notifications/${notificationId}/read`, {}, {withCredentials: true});
+            return fulfillWithValue({data, notificationId});
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
+export const get_unread_notifications_count = createAsyncThunk(
+    'seller/get_unread_notifications_count',
+    async(_, {rejectWithValue, fulfillWithValue}) => {
+        try {
+            const {data} = await api.get('/notifications/unread-count', {withCredentials: true});
+            return fulfillWithValue(data);
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
+export const get_chat_counts = createAsyncThunk(
+    'seller/get_chat_counts',
+    async(_, {rejectWithValue, fulfillWithValue}) => {
+        try {
+            const {data} = await api.get('/chat-counts', {withCredentials: true});
+            return fulfillWithValue(data);
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
 export const sellerReducer = createSlice({
     name: 'seller',
     initialState:{
@@ -134,7 +182,13 @@ export const sellerReducer = createSlice({
         loader: false,
         sellers : [], 
         totalSeller: 0,
-        seller: ''
+        seller: '',
+        notifications: [],
+        unreadCount: 0,
+        chatCounts: {
+            customerMessages: 0,
+            supportMessages: 0
+        }
     },
     reducers : {
 
@@ -178,7 +232,24 @@ export const sellerReducer = createSlice({
             state.loader = false; 
             state.successMessage = payload.message; 
         })
- 
+        
+        // Notifications
+        .addCase(get_seller_notifications.fulfilled, (state, { payload }) => {
+            state.notifications = payload.notifications;
+        })
+        .addCase(mark_notification_read.fulfilled, (state, { payload }) => {
+            const notificationIndex = state.notifications.findIndex(n => n._id === payload.notificationId);
+            if (notificationIndex !== -1) {
+                state.notifications[notificationIndex].status = 'read';
+            }
+            state.unreadCount = Math.max(0, state.unreadCount - 1);
+        })
+        .addCase(get_unread_notifications_count.fulfilled, (state, { payload }) => {
+            state.unreadCount = payload.count;
+        })
+        .addCase(get_chat_counts.fulfilled, (state, { payload }) => {
+            state.chatCounts = payload;
+        })
 
     }
 

@@ -124,58 +124,6 @@ const BannerValidation = () => {
                         >
                             ↻ Recharger
                         </button>
-                        <button 
-                            onClick={async () => {
-                                try {
-                                    console.log('=== TEST CREATION BANNIERE ===');
-                                    const response = await api.post('/banners/test');
-                                    console.log('Réponse test:', response.data);
-                                    toast.success('Bannière de test créée!');
-                                    
-                                    // Test immédiat de récupération
-                                    setTimeout(async () => {
-                                        console.log('=== TEST RECUPERATION ===');
-                                        try {
-                                            const checkResponse = await api.get('/banners/pending');
-                                            console.log('Vérification:', checkResponse.data);
-                                            setBanners(checkResponse.data.banners || []);
-                                            toast.success(`Trouvé: ${checkResponse.data.banners?.length || 0} bannières`);
-                                        } catch (err) {
-                                            console.error('Erreur vérification:', err);
-                                            toast.error('Erreur lors de la vérification');
-                                        }
-                                    }, 1000);
-                                } catch (error) {
-                                    console.error('Erreur test:', error);
-                                    toast.error('Erreur création test');
-                                }
-                            }}
-                            className='bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600'
-                        >
-                            + Test Complet
-                        </button>
-                        <button 
-                            onClick={async () => {
-                                try {
-                                    console.log('=== TEST PENDING SANS AUTH ===');
-                                    const response = await fetch('http://localhost:5000/api/banners/pending-test');
-                                    const data = await response.json();
-                                    console.log('Pending test:', data);
-                                    if (data.banners) {
-                                        setBanners(data.banners);
-                                        toast.success(`${data.banners.length} bannières trouvées!`);
-                                    } else {
-                                        toast.success('Aucune bannière');
-                                    }
-                                } catch (error) {
-                                    console.error('Erreur test:', error);
-                                    toast.error('Erreur test');
-                                }
-                            }}
-                            className='bg-purple-500 text-white px-3 py-1 rounded text-sm hover:bg-purple-600'
-                        >
-                            🔍 Test Pending
-                        </button>
                         <span className='bg-yellow-500 text-white px-3 py-1 rounded-full text-sm'>
                             {banners.length} en attente
                         </span>
