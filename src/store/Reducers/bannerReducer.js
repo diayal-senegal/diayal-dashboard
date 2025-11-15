@@ -52,7 +52,7 @@ export const get_pending_banners = createAsyncThunk(
     'banner/get_pending_banners',
     async(_, {rejectWithValue, fulfillWithValue}) => { 
         try {
-            const {data} = await api.get(`/admin/banners/pending`, {withCredentials: true})  
+            const {data} = await api.get(`/banners/pending`, {withCredentials: true})  
             return fulfillWithValue(data)
         } catch (error) { 
             return rejectWithValue(error.response.data)
@@ -65,7 +65,7 @@ export const validate_banner = createAsyncThunk(
     'banner/validate_banner',
     async({bannerId, status, reason}, {rejectWithValue, fulfillWithValue}) => { 
         try {
-            const {data} = await api.put(`/admin/banner/validate/${bannerId}`, 
+            const {data} = await api.put(`/banners/validate/${bannerId}`, 
                 {status, reason}, {withCredentials: true})  
             return fulfillWithValue(data)
         } catch (error) { 

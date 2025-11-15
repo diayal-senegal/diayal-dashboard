@@ -1,4 +1,6 @@
-import { lazy } from "react";         
+import { lazy } from "react";
+import BannerValidation from '../../views/admin/BannerValidation';
+
 const AdminDashboard = lazy(()=> import('../../views/admin/AdminDashboard'))  
 const Orders = lazy(()=> import('../../views/admin/Orders')) 
 const Category = lazy(()=> import('../../views/admin/Category'))  
@@ -9,8 +11,7 @@ const SellerRequest = lazy(()=> import('../../views/admin/SellerRequest'))
 const SellerDetails = lazy(()=> import('../../views/admin/SellerDetails'))   
 const ChatSeller = lazy(()=> import('../../views/admin/ChatSeller'))   
 const OrderDetails = lazy(()=> import('../../views/admin/OrderDetails'))
-const BannerValidation = lazy(()=> import('../../views/admin/BannerValidation'))
-const PublishedBannersPage = lazy(()=> import('../../views/admin/PublishedBannersPage'))
+const PublishedBanners = lazy(()=> import('../../views/admin/PublishedBanners'))
 const Newsletter = lazy(()=> import('../../views/admin/Newsletter'))
 const VendorTeaser = lazy(()=> import('../../views/admin/VendorTeaser'))
 const DealsManager = lazy(()=> import('../../views/admin/DealsManager'))
@@ -81,13 +82,13 @@ export const adminRoutes = [
         role : 'admin'
     },
     {
-        path: '/admin/dashboard/banner-validation',
+        path: 'admin/dashboard/banner-validation',
         element : <BannerValidation/> ,
         role : 'admin'
     },
     {
-        path: '/admin/dashboard/published-banners',
-        element : <PublishedBannersPage/> ,
+        path: 'admin/dashboard/published-banners',
+        element : <PublishedBanners/> ,
         role : 'admin'
     },
     {
