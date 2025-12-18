@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { get_seller, seller_status_update, messageClear } from '../../store/Reducers/sellerReducer';
+import { get_all_categories } from '../../store/Reducers/categoryReducer';
 import { useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 const SellerDetails = () => {
     const dispatch = useDispatch();
     const { seller, successMessage } = useSelector(state => state.seller);
+    const { allCategories } = useSelector(state => state.category);
     const { sellerId } = useParams();
     const [status, setStatus] = useState('');
 
     useEffect(() => {
         dispatch(get_seller(sellerId));
+        dispatch(get_all_categories());
     }, [sellerId, dispatch]);
 
     const submit = (e) => {
@@ -67,6 +70,16 @@ const SellerDetails = () => {
                                     <span>{seller?.email}</span>
                                 </div>
                                 <div className='flex gap-2 font-bold text-[#000000]'>
+                                    <span>Téléphone : </span>
+                                    <span>
+                                        {seller?.phone ? (
+                                            <a href={`tel:${seller.phone}`} className='text-blue-600 hover:underline'>
+                                                📞 {seller.phone}
+                                            </a>
+                                        ) : 'Non renseigné'}
+                                    </span>
+                                </div>
+                                <div className='flex gap-2 font-bold text-[#000000]'>
                                     <span>Rôle : </span>
                                     <span>{seller?.role}</span>
                                 </div>
@@ -91,6 +104,12 @@ const SellerDetails = () => {
                                 <div className='flex gap-2 font-bold text-[#000000]'>
                                     <span>Nom de la boutique : </span>
                                     <span>{seller?.shopInfo?.shopName}</span>
+                                </div>
+                                <div className='flex gap-2 font-bold text-[#000000]'>
+                                    <span>Catégorie d'activité : </span>
+                                    <span>{ seller?.shopInfo?.sector ? (
+                                        allCategories?.find(cat => cat.slug === seller.shopInfo.sector)?.name || seller.shopInfo.sector
+                                    ) : 'Non renseigné' }</span>
                                 </div>
                                 <div className='flex gap-2 font-bold text-[#000000]'>
                                     <span>Région : </span>

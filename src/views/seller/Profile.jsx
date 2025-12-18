@@ -9,6 +9,7 @@ import { PropagateLoader } from 'react-spinners';
 import { overrideStyle } from '../../utils/utils'; 
 import { create_stripe_connect_account } from '../../store/Reducers/sellerReducer';
 import { add_mobile_payment_info, get_mobile_payment_info } from '../../store/Reducers/PaymentReducer';
+import { get_all_categories } from '../../store/Reducers/categoryReducer';
 
 const Profile = () => {
 
@@ -18,7 +19,8 @@ const Profile = () => {
         shopName: '',
         sub_district: '',
         street: '',
-        phone: ''
+        phone: '',
+        sector: ''
     })
 
     const [editMode, setEditMode] = useState(false)
@@ -48,10 +50,12 @@ const Profile = () => {
     const dispatch = useDispatch()
     const { userInfo,loader,successMessage,errorMessage } = useSelector(state => state.auth)
     const { mobilePaymentInfo, loader: paymentLoader } = useSelector(state => state.payment)
+    const { allCategories } = useSelector(state => state.category)
   
 
     useEffect(() => {
         dispatch(get_mobile_payment_info())
+        dispatch(get_all_categories())
         if (userInfo) {
             setUserEditData({
                 name: userInfo.name || '',
@@ -66,7 +70,8 @@ const Profile = () => {
                     district: userInfo.shopInfo.district || '',
                     sub_district: userInfo.shopInfo.sub_district || '',
                     street: userInfo.shopInfo.street || '',
-                    phone: userInfo.shopInfo.phone || ''
+                    phone: userInfo.shopInfo.phone || '',
+                    sector: userInfo.shopInfo.sector || ''
                 })
             }
         }
@@ -305,6 +310,18 @@ const Profile = () => {
                     <div className='flex flex-col w-full gap-1 mb-2'>
                 <label htmlFor="Shop">Nom de la boutique</label>
                 <input value={state.shopName} onChange={inputHandle} className='px-4 py-2 focus:border-indigo-200 outline-none bg-[#6a5fdf] border border-slate-700 rounded-md text-[#d0d2d6]' type="text" name='shopName' id='Shop' placeholder='Nom de la boutique' />
+            </div>
+
+            <div className='flex flex-col w-full gap-1 mb-2'>
+                <label htmlFor="sector">Catégorie d'activité</label>
+                <select value={state.sector} onChange={inputHandle} name='sector' id='sector' className='px-4 py-2 focus:border-indigo-200 outline-none bg-[#6a5fdf] border border-slate-700 rounded-md text-[#d0d2d6]'>
+                    <option value=''>Sélectionner une catégorie</option>
+                    {allCategories && allCategories.map((category) => (
+                        <option key={category._id} value={category.slug}>
+                            {category.name}
+                        </option>
+                    ))}
+                </select>
             </div>  
 
             <div className='flex flex-col w-full gap-1 mb-2'>
@@ -345,6 +362,17 @@ const Profile = () => {
                             <input value={editData.shopName} onChange={editInputHandle} name='shopName' className='px-4 py-2 focus:border-indigo-200 outline-none bg-[#6a5fdf] border border-slate-700 rounded-md text-[#d0d2d6]' type="text" />
                         </div>
                         <div className='flex flex-col w-full gap-1 mb-2'>
+                            <label>Catégorie d'activité</label>
+                            <select value={editData.sector} onChange={editInputHandle} name='sector' className='px-4 py-2 focus:border-indigo-200 outline-none bg-[#6a5fdf] border border-slate-700 rounded-md text-[#d0d2d6]'>
+                                <option value=''>Sélectionner une catégorie</option>
+                                {allCategories && allCategories.map((category) => (
+                                    <option key={category._id} value={category.slug}>
+                                        {category.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className='flex flex-col w-full gap-1 mb-2'>
                             <label>Région</label>
                             <input value={editData.division} onChange={editInputHandle} name='division' className='px-4 py-2 focus:border-indigo-200 outline-none bg-[#6a5fdf] border border-slate-700 rounded-md text-[#d0d2d6]' type="text" />
                         </div>
@@ -379,6 +407,12 @@ const Profile = () => {
                         <div className='flex gap-2'>
                             <span>Nom de la boutique : </span>
                             <span>{ userInfo.shopInfo?.shopName }</span> 
+                        </div>
+                        <div className='flex gap-2'>
+                            <span>Catégorie d'activité : </span>
+                            <span>{ userInfo.shopInfo?.sector ? (
+                                allCategories?.find(cat => cat.slug === userInfo.shopInfo.sector)?.name || userInfo.shopInfo.sector
+                            ) : 'Non renseigné' }</span> 
                         </div>
                         <div className='flex gap-2'>
                             <span>Région : </span>

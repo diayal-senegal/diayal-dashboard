@@ -6,6 +6,10 @@ import SellerNotifications from '../components/SellerNotifications';
 const Header = ({showSidebar, setShowSidebar}) => {
 
   const {userInfo } = useSelector(state => state.auth)
+  
+  if (!userInfo) {
+    return null
+  }
 
     return (
         <div className='fixed top-0 left-0 w-full py-5 px-2 lg:px-7 z-40'>

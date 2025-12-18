@@ -17,6 +17,12 @@ const VendorTeaser = () => {
 
     useEffect(() => {
         loadVendorTeaserData();
+        // Écouter l'événement de rafraîchissement des notifications
+        const handleRefreshNotifications = () => {
+            window.dispatchEvent(new CustomEvent('refreshNotifications'));
+        };
+        window.addEventListener('refreshNotifications', handleRefreshNotifications);
+        return () => window.removeEventListener('refreshNotifications', handleRefreshNotifications);
     }, []);
 
     useEffect(() => {

@@ -19,6 +19,7 @@ const Register = () => {
     const [state, setState] = useState({
         name: "",
         email: "",
+        phone: "",
         password: ""
     })
 
@@ -79,6 +80,14 @@ const Register = () => {
             <label htmlFor="email">Email</label>
             <input onChange={inputHandle} value={state.email} className='px-3 py-2 outline-none border border-slate-400 bg-transparent rounded-md' type="email" name='email' placeholder='Email' id='email' required />
 
+        </div>
+
+        <div className='flex flex-col w-full gap-1 mb-3'>
+            <label htmlFor="phone">Téléphone</label>
+            <input onChange={inputHandle} value={state.phone} className='px-3 py-2 outline-none border border-slate-400 bg-transparent rounded-md' type="tel" name='phone' placeholder='Ex: +221 77 123 45 67' id='phone' required />
+            <div className='text-xs text-gray-300 mt-1'>
+                💡 Utilisé pour la validation de votre compte par notre équipe
+            </div>
         </div>
 
         <div className='flex flex-col w-full gap-1 mb-3'>

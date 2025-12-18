@@ -26,6 +26,17 @@ const Sidebar = ({showSidebar, setShowSidebar}) => {
             dispatch(get_unread_notifications_count())
             dispatch(get_chat_counts())
         }
+        
+        // Écouter l'événement de rafraîchissement des notifications
+        const handleRefreshNotifications = () => {
+            if (role === 'seller') {
+                dispatch(get_unread_notifications_count())
+                dispatch(get_chat_counts())
+            }
+        };
+        
+        window.addEventListener('refreshNotifications', handleRefreshNotifications);
+        return () => window.removeEventListener('refreshNotifications', handleRefreshNotifications);
     }, [dispatch, role])
     
     useEffect(() => {

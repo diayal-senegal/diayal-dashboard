@@ -37,6 +37,18 @@ export const get_category = createAsyncThunk(
     }
 )
 
+export const get_all_categories = createAsyncThunk(
+    'category/get_all_categories',
+    async(_, {rejectWithValue, fulfillWithValue}) => {
+        try {
+            const {data} = await api.get('/category-get?page=1&searchValue=&parPage=100', {withCredentials: true})
+            return fulfillWithValue(data)
+        } catch (error) {
+            return rejectWithValue(error.response.data)
+        }
+    }
+)
+
   // End Method 
 
   export const updateCategory = createAsyncThunk(
@@ -84,6 +96,7 @@ export const categoryReducer = createSlice({
         errorMessage : '',
         loader: false,
         categorys : [], 
+        allCategories: [],
         totalCategory: 0
     },
     reducers : {
@@ -113,6 +126,10 @@ export const categoryReducer = createSlice({
             state.totalCategory = payload.totalCategory;
             state.categorys = payload.categorys;
              
+        })
+        
+        .addCase(get_all_categories.fulfilled, (state, { payload }) => {
+            state.allCategories = payload.categorys;
         })
 
         .addCase(updateCategory.fulfilled, (state, { payload }) => {

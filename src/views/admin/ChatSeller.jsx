@@ -21,6 +21,8 @@ const ChatSeller = () => {
 
     useEffect(() => {
         dispatch(get_sellers())
+        // Déclencher le rafraîchissement des notifications quand on accède à la page
+        window.dispatchEvent(new CustomEvent('refreshNotifications'));
     }, [dispatch])
 
     const send = (e) => {
@@ -37,6 +39,10 @@ const ChatSeller = () => {
     useEffect(() => {
         if (sellerId) {
             dispatch(get_admin_message(sellerId))
+            // Rafraîchir les notifications quand on sélectionne un vendeur
+            setTimeout(() => {
+                window.dispatchEvent(new CustomEvent('refreshNotifications'));
+            }, 500);
         }
     },[sellerId,dispatch])
 
