@@ -195,6 +195,15 @@ export const sellerReducer = createSlice({
         messageClear : (state,_) => {
             state.successMessage = ""
             state.errorMessage = ""
+        },
+        
+        clearChatCounts : (state, action) => {
+            const { type } = action.payload;
+            if (type === 'customer') {
+                state.chatCounts.customerMessages = 0;
+            } else if (type === 'support') {
+                state.chatCounts.supportMessages = 0;
+            }
         }
 
     },
@@ -254,5 +263,5 @@ export const sellerReducer = createSlice({
     }
 
 })
-export const {messageClear} = sellerReducer.actions
+export const {messageClear, clearChatCounts} = sellerReducer.actions
 export default sellerReducer.reducer

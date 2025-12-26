@@ -11,8 +11,37 @@ const Notifications = () => {
         dispatch(get_seller_notifications());
     }, [dispatch]);
 
+    // Marquer automatiquement toutes les notifications comme lues quand on visite la page
+    useEffect(() => {
+        const markAllAsRead = () => {
+            const unreadNotifications = notifications.filter(n => n.status === 'unread');
+            unreadNotifications.forEach(notification => {
+                dispatch(mark_notification_read(notification._id));
+                
+                // Synchroniser avec localStorage
+                const stored = JSON.parse(localStorage.getItem('sellerNotifications') || '[]');
+                const updated = stored.map(n => 
+                    n.id === notification._id ? { ...n, read: true } : n
+                );
+                localStorage.setItem('sellerNotifications', JSON.stringify(updated));
+            });
+        };
+
+        if (notifications.length > 0) {
+            // Délai pour permettre le rendu avant de marquer comme lu
+            setTimeout(markAllAsRead, 1000);
+        }
+    }, [notifications, dispatch]);
+
     const handleMarkAsRead = (notificationId) => {
         dispatch(mark_notification_read(notificationId));
+        
+        // Synchroniser avec localStorage pour le header
+        const stored = JSON.parse(localStorage.getItem('sellerNotifications') || '[]');
+        const updated = stored.map(n => 
+            n.id === notificationId ? { ...n, read: true } : n
+        );
+        localStorage.setItem('sellerNotifications', JSON.stringify(updated));
     };
 
     const getNotificationIcon = (type) => {

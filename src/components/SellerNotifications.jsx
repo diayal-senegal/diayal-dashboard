@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { mark_notification_read } from '../store/Reducers/sellerReducer';
 import { FaBell, FaCheck, FaTimes } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 
@@ -6,6 +8,7 @@ const SellerNotifications = () => {
     const [notifications, setNotifications] = useState([]);
     const [showDropdown, setShowDropdown] = useState(false);
     const [unreadCount, setUnreadCount] = useState(0);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         const loadNotifications = () => {
@@ -42,6 +45,9 @@ const SellerNotifications = () => {
         localStorage.setItem('sellerNotifications', JSON.stringify(updated));
         setNotifications(updated);
         setUnreadCount(updated.filter(n => !n.read).length);
+        
+        // Synchroniser avec Redux
+        dispatch(mark_notification_read(notificationId));
     };
 
     const clearAll = () => {

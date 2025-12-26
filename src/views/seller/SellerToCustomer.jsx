@@ -3,6 +3,7 @@ import { FaList } from 'react-icons/fa6';
 import { IoMdClose } from "react-icons/io";
 import { useDispatch, useSelector } from 'react-redux';
 import { get_customer_message, get_customers,messageClear,send_message,updateMessage } from '../../store/Reducers/chatReducer';
+import { clearChatCounts } from '../../store/Reducers/sellerReducer';
 import { Link, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
@@ -25,6 +26,8 @@ const SellerToCustomer = () => {
 
     useEffect(() => {
         dispatch(get_customers(userInfo._id))
+        // Marquer les notifications de chat client comme lues
+        dispatch(clearChatCounts({ type: 'customer' }))
     },[dispatch,userInfo._id])
 
     useEffect(() => {
@@ -139,7 +142,7 @@ const SellerToCustomer = () => {
               alt="" />
          <div className='w-[10px] h-[10px] bg-green-500 rounded-full absolute right-0 bottom-0'></div>
         </div>
-        <h2 className='text-base text-white font-semibold'>{currentCustomer.name}</h2>
+        <h2 className='text-base text-white font-semibold'>{currentCustomer?.name || 'Client'}</h2>
 
                 </div>
             } 

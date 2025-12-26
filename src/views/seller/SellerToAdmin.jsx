@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { get_admin_message, get_seller_message, get_sellers, send_message_seller_admin, updateAdminMessage,messageClear } from '../../store/Reducers/chatReducer'
+import { clearChatCounts } from '../../store/Reducers/sellerReducer';
 
 import {socket} from '../../utils/utils'
 
@@ -15,6 +16,8 @@ const SellerToAdmin = () => {
 
     useEffect(() => {
         dispatch(get_seller_message())
+        // Marquer les notifications de support comme lues
+        dispatch(clearChatCounts({ type: 'support' }))
     },[dispatch])
 
     const send = (e) => {
