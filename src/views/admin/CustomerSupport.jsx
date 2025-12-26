@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaComments, FaUser, FaEnvelope, FaClock, FaReply, FaPaperPlane, FaEye } from 'react-icons/fa';
 import { getAllSupportMessages, sendSupportMessage, markMessagesAsRead } from '../../api/customerSupport';
+import { useMarkNotificationsRead } from '../../hooks/useMarkNotificationsRead';
 
 const CustomerSupport = () => {
     const [messages, setMessages] = useState([]);
@@ -8,6 +9,9 @@ const CustomerSupport = () => {
     const [sessionMessages, setSessionMessages] = useState([]);
     const [replyMessage, setReplyMessage] = useState('');
     const [loading, setLoading] = useState(false);
+    
+    // Marquer les notifications comme lues
+    useMarkNotificationsRead('support');
 
     // Grouper les messages par session
     const groupMessagesBySession = (messages) => {

@@ -5,6 +5,7 @@ import {  FaEye } from "react-icons/fa";
 import { useSelector, useDispatch } from 'react-redux';
 import { get_seller_request } from '../../store/Reducers/sellerReducer';
 import Search from '../components/Search';
+import { useMarkNotificationsRead } from '../../hooks/useMarkNotificationsRead';
 
 const SellerRequest = () => {
     const dispatch = useDispatch();
@@ -12,6 +13,9 @@ const SellerRequest = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchValue, setSearchValue] = useState('');
     const [parPage, setParPage] = useState(5);
+    
+    // Marquer les notifications comme lues
+    useMarkNotificationsRead('sellerRequest');
 
     useEffect(() => {
         dispatch(get_seller_request({

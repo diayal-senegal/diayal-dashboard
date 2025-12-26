@@ -3,12 +3,16 @@ import { MdEmail, MdDelete, MdFileDownload, MdTrendingUp, MdPeople } from 'react
 import { FaSearch, FaCalendarAlt, FaTrash } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { get_newsletter_stats, get_newsletter_subscribers, delete_newsletter_subscriber, messageClear } from '../../store/Reducers/newsletterReducer';
+import { useMarkNotificationsRead } from '../../hooks/useMarkNotificationsRead';
 import moment from 'moment';
 import toast from 'react-hot-toast';
 
 const Newsletter = () => {
     const dispatch = useDispatch();
     const { subscribers, loader, successMessage, errorMessage, totalSubscribers } = useSelector(state => state.newsletter);
+    
+    // Marquer les notifications comme lues
+    useMarkNotificationsRead('newsletter');
     
     const [localStats, setLocalStats] = useState({
         total: 0,

@@ -2,6 +2,7 @@ import React, { forwardRef, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { FixedSizeList as List } from 'react-window';
 import { confirm_payment_request, get_payment_request,messageClear } from '../../store/Reducers/PaymentReducer';
+import { useMarkNotificationsRead } from '../../hooks/useMarkNotificationsRead';
 import moment from 'moment';
 import 'moment/locale/fr';
 import toast from 'react-hot-toast';
@@ -21,6 +22,9 @@ const PaymentRequest = () => {
     const dispatch = useDispatch()
     const {successMessage, errorMessage, pendingWithdrows,loader } = useSelector(state => state.payment)
     const [paymentId, setPaymentId] = useState('')
+    
+    // Marquer les notifications comme lues
+    useMarkNotificationsRead('paymentRequest');
 
     useEffect(() => { 
         dispatch(get_payment_request())

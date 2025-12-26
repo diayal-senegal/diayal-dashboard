@@ -6,7 +6,11 @@ export const useNotifications = () => {
         newsletter: 0,
         vendorTeaser: 0,
         contact: 0,
-        support: 0
+        support: 0,
+        sellerRequest: 0,
+        paymentRequest: 0,
+        sellerSupport: 0,
+        bannerValidation: 0
     })
     const [loading, setLoading] = useState(false)
 

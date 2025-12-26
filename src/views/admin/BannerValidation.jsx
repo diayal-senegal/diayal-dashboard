@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FaCheck, FaTimes, FaEye } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { get_pending_banners, validate_banner, messageClear } from '../../store/Reducers/bannerReducer';
+import { useMarkNotificationsRead } from '../../hooks/useMarkNotificationsRead';
 import toast from 'react-hot-toast';
 import api from '../../api/api';
 
@@ -11,6 +12,9 @@ const BannerValidation = () => {
     const [banners, setBanners] = useState([]);
     const [selectedBanner, setSelectedBanner] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    
+    // Marquer les notifications comme lues
+    useMarkNotificationsRead('bannerValidation');
 
     useEffect(() => {
         loadBanners();

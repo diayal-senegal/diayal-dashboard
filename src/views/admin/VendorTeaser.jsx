@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { FaUsers, FaPhone, FaFileDownload, FaChartLine, FaPalette } from 'react-icons/fa';
 import { MdEmail, MdCalendarToday } from 'react-icons/md';
+import { useMarkNotificationsRead } from '../../hooks/useMarkNotificationsRead';
 import moment from 'moment';
 import toast from 'react-hot-toast';
 
 const VendorTeaser = () => {
+    // Marquer les notifications comme lues
+    useMarkNotificationsRead('vendorTeaser');
+    
     const [stats, setStats] = useState({
         total: 0,
         today: 0,

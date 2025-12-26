@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import { FaEnvelope, FaUser, FaClock, FaEye, FaEnvelopeOpen } from 'react-icons/fa'
 import { getContacts, markContactAsRead } from '../../api/contacts'
+import { useMarkNotificationsRead } from '../../hooks/useMarkNotificationsRead'
 
 const ContactMessages = () => {
     const [contacts, setContacts] = useState([])
     const [selectedContact, setSelectedContact] = useState(null)
     const [loading, setLoading] = useState(false)
+    
+    // Marquer les notifications comme lues
+    useMarkNotificationsRead('contact');
 
     // Charger tous les messages de contact
     const loadContacts = async () => {
