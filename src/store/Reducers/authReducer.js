@@ -8,11 +8,9 @@ export const admin_login = createAsyncThunk(
          console.log(info)
         try {
             const {data} = await api.post('/admin-login',info,{withCredentials: true})
-            localStorage.setItem('accessToken',data.token)
-            // console.log(data)
+            // Token stocké dans cookie httpOnly par le backend
             return fulfillWithValue(data)
         } catch (error) {
-            // console.log(error.response.data)
             return rejectWithValue(error.response.data)
         }
     }
@@ -26,10 +24,9 @@ export const seller_login = createAsyncThunk(
         try {
             const {data} = await api.post('/seller-login',info,{withCredentials: true})
             console.log(data)
-            localStorage.setItem('accessToken',data.token) 
+            // Token stocké dans cookie httpOnly par le backend
             return fulfillWithValue(data)
         } catch (error) {
-            // console.log(error.response.data)
             return rejectWithValue(error.response.data)
         }
     }
@@ -73,11 +70,9 @@ export const seller_register = createAsyncThunk(
         try {
             console.log(info)
             const {data} = await api.post('/seller-register',info,{withCredentials: true})
-            localStorage.setItem('accessToken',data.token)
-            //  console.log(data)
+            // Token stocké dans cookie httpOnly par le backend
             return fulfillWithValue(data)
         } catch (error) {
-            // console.log(error.response.data)
             return rejectWithValue(error.response.data)
         }
     }
@@ -106,7 +101,6 @@ export const profile_info_add = createAsyncThunk(
            const decodeToken = jwtDecode(token)
            const expireTime = new Date(decodeToken.exp * 1000)
            if (new Date() > expireTime) {
-             localStorage.removeItem('accessToken')
              return ''
            } else {
                 return decodeToken.role
@@ -124,8 +118,8 @@ export const profile_info_add = createAsyncThunk(
         async({navigate,role},{rejectWithValue, fulfillWithValue}) => {
              
             try {
-                const {data} = await api.get('/logout', {withCredentials: true}) 
-                localStorage.removeItem('accessToken') 
+                const {data} = await api.get('/logout', {withCredentials: true})
+                // Cookie supprimé par le backend
                 if (role === 'admin') {
                     navigate('/admin/login')
                 } else {
@@ -133,7 +127,6 @@ export const profile_info_add = createAsyncThunk(
                 }
                 return fulfillWithValue(data)
             } catch (error) {
-                // console.log(error.response.data)
                 return rejectWithValue(error.response.data)
             }
         }
@@ -193,8 +186,8 @@ export const authReducer = createSlice({
         errorMessage : '',
         loader: false,
         userInfo : '',
-        role: returnRole(localStorage.getItem('accessToken')),
-        token: localStorage.getItem('accessToken')
+        role: '',
+        token: null
     },
     reducers : {
 

@@ -19,6 +19,12 @@ const CustomerSupport = lazy(()=> import('../../views/admin/CustomerSupport'))
 const ContactMessages = lazy(()=> import('../../views/admin/ContactMessages'))
 const CommissionsPage = lazy(()=> import('../../views/admin/CommissionsPage'))
 const RevenueAnalytics = lazy(()=> import('../../views/admin/RevenueAnalytics'))  
+const DeliveryQueue = lazy(()=> import('../../views/admin/delivery/DeliveryQueue'))
+const DeliveryDetail = lazy(()=> import('../../views/admin/delivery/DeliveryDetail'))
+const DeliveryCreate = lazy(()=> import('../../views/admin/delivery/DeliveryCreate'))
+const CourierManagement = lazy(()=> import('../../views/admin/delivery/CourierManagement'))  
+const DeliveryReassignment = lazy(()=> import('../../views/admin/delivery/DeliveryReassignment'))
+const DeliveryTracking = lazy(()=> import('../../views/admin/delivery/DeliveryTracking'))  
 
 export const adminRoutes = [
     {
@@ -124,6 +130,36 @@ export const adminRoutes = [
     {
         path: 'admin/dashboard/revenue-analytics',
         element : <RevenueAnalytics/> ,
+        role : 'admin'
+    },
+    {
+        path: 'admin/dashboard/delivery-queue',
+        element : <DeliveryQueue/> ,
+        role : 'admin'
+    },
+    {
+        path: 'admin/dashboard/delivery-create',
+        element : <DeliveryCreate/> ,
+        role : 'admin'
+    },
+    {
+        path: 'admin/dashboard/deliveries/:id',
+        element : <DeliveryDetail/> ,
+        role : 'admin'
+    },
+    {
+        path: 'admin/dashboard/courier-management',
+        element : <CourierManagement/> ,
+        role : 'admin'
+    },
+    {
+        path: 'admin/dashboard/delivery-reassignment',
+        element : <DeliveryReassignment/> ,
+        role : 'admin'
+    },
+    {
+        path: 'admin/dashboard/delivery-tracking',
+        element : <DeliveryTracking/> ,
         role : 'admin'
     },
  
