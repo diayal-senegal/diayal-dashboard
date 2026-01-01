@@ -72,11 +72,23 @@ const DeliveryDetail = () => {
 
                 <div className="mt-6">
                     <h2 className="text-lg font-semibold mb-3">📋 Détails</h2>
-                    <p><strong>Statut:</strong> {delivery.status}</p>
+                    <p><strong>Statut:</strong> <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                        delivery.status === 'ACCEPTED' ? 'bg-green-100 text-green-800' :
+                        delivery.status === 'REJECTED' ? 'bg-red-100 text-red-800' :
+                        delivery.status === 'ASSIGNED' ? 'bg-blue-100 text-blue-800' :
+                        delivery.status === 'PICKED_UP' ? 'bg-purple-100 text-purple-800' :
+                        delivery.status === 'EN_ROUTE' ? 'bg-orange-100 text-orange-800' :
+                        delivery.status === 'ARRIVED' ? 'bg-teal-100 text-teal-800' :
+                        delivery.status === 'DELIVERED' ? 'bg-green-100 text-green-800' :
+                        delivery.status === 'FAILED' ? 'bg-red-100 text-red-800' :
+                        'bg-gray-100 text-gray-800'
+                    }`}>{delivery.status}</span></p>
                     <p><strong>Montant COD:</strong> {delivery.codAmount} XOF</p>
                     <p><strong>Priorité:</strong> {delivery.priority === 0 ? 'Normal' : delivery.priority === 1 ? 'Urgent' : 'Express'}</p>
                     {delivery.notes && <p><strong>Notes:</strong> {delivery.notes}</p>}
                     <p><strong>Créé le:</strong> {new Date(delivery.createdAt).toLocaleString()}</p>
+                    {delivery.timestamps?.acceptedAt && <p><strong>Acceptée le:</strong> {new Date(delivery.timestamps.acceptedAt).toLocaleString()}</p>}
+                    {delivery.timestamps?.rejectedAt && <p><strong>Refusée le:</strong> {new Date(delivery.timestamps.rejectedAt).toLocaleString()}</p>}
                 </div>
             </div>
         </div>

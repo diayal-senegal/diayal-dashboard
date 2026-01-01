@@ -21,7 +21,7 @@ const DeliveryTracking = () => {
   const loadDeliveries = async () => {
     try {
       setLoading(true);
-      const statusParam = statusFilter === 'all' ? 'ASSIGNED,PICKED_UP,IN_TRANSIT,DELIVERED' : statusFilter;
+      const statusParam = statusFilter === 'all' ? 'PICKUP_PENDING,ASSIGNED,ACCEPTED,REJECTED,PICKED_UP,EN_ROUTE,ARRIVED,IN_TRANSIT,DELIVERED,FAILED,CANCELED' : statusFilter;
       const response = await fetch(`${API_URL}/api/admin/deliveries?status=${statusParam}`, {
         credentials: 'include'
       });
@@ -44,11 +44,17 @@ const DeliveryTracking = () => {
 
   const getStatusBadge = (status) => {
     const config = {
+      'PICKUP_PENDING': { color: 'bg-gray-100 text-gray-800', label: 'En attente', icon: FaClock },
       'ASSIGNED': { color: 'bg-blue-100 text-blue-800', label: 'Assignée', icon: FaTruck },
+      'ACCEPTED': { color: 'bg-green-100 text-green-800', label: 'Acceptée', icon: FaCheckCircle },
+      'REJECTED': { color: 'bg-red-100 text-red-800', label: 'Refusée', icon: FaExclamationCircle },
       'PICKED_UP': { color: 'bg-yellow-100 text-yellow-800', label: 'Récupérée', icon: FaClock },
+      'EN_ROUTE': { color: 'bg-orange-100 text-orange-800', label: 'En route', icon: FaTruck },
+      'ARRIVED': { color: 'bg-teal-100 text-teal-800', label: 'Arrivé', icon: FaMapMarkerAlt },
       'IN_TRANSIT': { color: 'bg-purple-100 text-purple-800', label: 'En transit', icon: FaTruck },
       'DELIVERED': { color: 'bg-green-100 text-green-800', label: 'Livrée', icon: FaCheckCircle },
-      'FAILED': { color: 'bg-red-100 text-red-800', label: 'Échec', icon: FaExclamationCircle }
+      'FAILED': { color: 'bg-red-100 text-red-800', label: 'Échec', icon: FaExclamationCircle },
+      'CANCELED': { color: 'bg-gray-100 text-gray-800', label: 'Annulée', icon: FaExclamationCircle }
     };
     const { color, label, icon: Icon } = config[status] || config['ASSIGNED'];
     return (
@@ -112,10 +118,17 @@ const DeliveryTracking = () => {
             className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="all">Tous les statuts</option>
+            <option value="PICKUP_PENDING">En attente</option>
             <option value="ASSIGNED">Assignées</option>
+            <option value="ACCEPTED">Acceptées</option>
+            <option value="REJECTED">Refusées</option>
             <option value="PICKED_UP">Récupérées</option>
+            <option value="EN_ROUTE">En route</option>
+            <option value="ARRIVED">Arrivées</option>
             <option value="IN_TRANSIT">En transit</option>
             <option value="DELIVERED">Livrées</option>
+            <option value="FAILED">Échecs</option>
+            <option value="CANCELED">Annulées</option>
           </select>
           <button
             onClick={loadDeliveries}
@@ -128,12 +141,13 @@ const DeliveryTracking = () => {
       </div>
 
       {/* Statistiques */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
         {[
+          { label: 'En attente', value: deliveries.filter(d => d.status === 'PICKUP_PENDING').length, color: 'bg-gray-500', icon: FaClock },
           { label: 'Assignées', value: deliveries.filter(d => d.status === 'ASSIGNED').length, color: 'bg-blue-500', icon: FaTruck },
-          { label: 'En cours', value: deliveries.filter(d => ['PICKED_UP', 'IN_TRANSIT'].includes(d.status)).length, color: 'bg-purple-500', icon: FaClock },
+          { label: 'En cours', value: deliveries.filter(d => ['ACCEPTED', 'PICKED_UP', 'EN_ROUTE', 'ARRIVED', 'IN_TRANSIT'].includes(d.status)).length, color: 'bg-purple-500', icon: FaClock },
           { label: 'Livrées', value: deliveries.filter(d => d.status === 'DELIVERED').length, color: 'bg-green-500', icon: FaCheckCircle },
-          { label: 'Total', value: deliveries.length, color: 'bg-gray-500', icon: FaCalendarAlt }
+          { label: 'Total', value: deliveries.length, color: 'bg-indigo-500', icon: FaCalendarAlt }
         ].map((stat, i) => (
           <div key={i} className="bg-white p-4 rounded-md shadow">
             <div className={`w-12 h-12 ${stat.color} rounded-full flex items-center justify-center text-white text-xl font-bold mb-2`}>
@@ -291,13 +305,20 @@ const DeliveryTracking = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-700 mb-2">⏱️ Timestamps</h4>
-                  <div className="bg-gray-50 p-3 rounded text-sm space-y-1">
-                    <p><strong>Créée:</strong> {formatDateTime(selectedDelivery.timestamps?.created)}</p>
-                    <p><strong>Assignée:</strong> {formatDateTime(selectedDelivery.timestamps?.assignedAt)}</p>
-                    <p><strong>Récupérée:</strong> {formatDateTime(selectedDelivery.timestamps?.pickedUpAt)}</p>
-                    <p><strong>En transit:</strong> {formatDateTime(selectedDelivery.timestamps?.inTransitAt)}</p>
-                    <p><strong>Livrée:</strong> {formatDateTime(selectedDelivery.timestamps?.deliveredAt)}</p>
+                  <h4 className="font-semibold text-gray-700 mb-2">⏱️ Historique des statuts</h4>
+                  <div className="bg-gray-50 p-3 rounded text-sm space-y-1 max-h-64 overflow-y-auto">
+                    <p><strong>Créée:</strong> {formatDateTime(selectedDelivery.createdAt)}</p>
+                    {selectedDelivery.timestamps?.pickupPendingAt && <p><strong>En attente:</strong> {formatDateTime(selectedDelivery.timestamps.pickupPendingAt)}</p>}
+                    {selectedDelivery.timestamps?.assignedAt && <p><strong>Assignée:</strong> {formatDateTime(selectedDelivery.timestamps.assignedAt)}</p>}
+                    {selectedDelivery.timestamps?.acceptedAt && <p className="text-green-600"><strong>Acceptée:</strong> {formatDateTime(selectedDelivery.timestamps.acceptedAt)}</p>}
+                    {selectedDelivery.timestamps?.rejectedAt && <p className="text-red-600"><strong>Refusée:</strong> {formatDateTime(selectedDelivery.timestamps.rejectedAt)}</p>}
+                    {selectedDelivery.timestamps?.pickedUpAt && <p><strong>Récupérée:</strong> {formatDateTime(selectedDelivery.timestamps.pickedUpAt)}</p>}
+                    {selectedDelivery.timestamps?.enRouteAt && <p><strong>En route:</strong> {formatDateTime(selectedDelivery.timestamps.enRouteAt)}</p>}
+                    {selectedDelivery.timestamps?.arrivedAt && <p><strong>Arrivée:</strong> {formatDateTime(selectedDelivery.timestamps.arrivedAt)}</p>}
+                    {selectedDelivery.timestamps?.inTransitAt && <p><strong>En transit:</strong> {formatDateTime(selectedDelivery.timestamps.inTransitAt)}</p>}
+                    {selectedDelivery.timestamps?.deliveredAt && <p className="text-green-600"><strong>Livrée:</strong> {formatDateTime(selectedDelivery.timestamps.deliveredAt)}</p>}
+                    {selectedDelivery.timestamps?.failedAt && <p className="text-red-600"><strong>Échec:</strong> {formatDateTime(selectedDelivery.timestamps.failedAt)}</p>}
+                    {selectedDelivery.timestamps?.canceledAt && <p className="text-gray-600"><strong>Annulée:</strong> {formatDateTime(selectedDelivery.timestamps.canceledAt)}</p>}
                   </div>
                 </div>
               </div>

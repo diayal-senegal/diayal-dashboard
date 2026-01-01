@@ -6,7 +6,7 @@ const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 const DeliveryCreate = () => {
     const navigate = useNavigate();
-    const { userInfo, token } = useSelector(state => state.auth);
+    const { token } = useSelector(state => state.auth);
     const [loading, setLoading] = useState(false);
     const [couriers, setCouriers] = useState([]);
     const [formData, setFormData] = useState({
@@ -52,46 +52,109 @@ const DeliveryCreate = () => {
         setLoading(true);
 
         try {
-            // Créer la livraison
+            const payload = {
+                orderId: formData.orderId || '000000000000000000000001',
+                sellerId: formData.sellerId || '000000000000000000000001',
+                customerId: formData.customerId || '000000000000000000000001',
+                pickup: formData.pickup,
+                dropoff: formData.dropoff,
+                codAmount: parseInt(formData.codAmount) || 0,
+                notes: formData.notes,
+                priority: parseInt(formData.priority),
+                courierId: formData.assignToCourier || null
+            };
+
+            console.log('📤 Envoi de la requête:', payload);
+            console.log('🔑 Token présent:', !!token);
+            console.log('🌐 URL:', `${API_URL}/api/admin/deliveries`);
+
             const response = await fetch(`${API_URL}/api/admin/deliveries`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    orderId: formData.orderId || '000000000000000000000001',
-                    sellerId: formData.sellerId || '000000000000000000000001',
-                    customerId: formData.customerId || '000000000000000000000001',
-                    pickup: formData.pickup,
-                    dropoff: formData.dropoff,
-                    codAmount: parseInt(formData.codAmount) || 0,
-                    notes: formData.notes,
-                    priority: parseInt(formData.priority)
-                })
+                body: JSON.stringify(payload)
             });
 
+            console.log('📥 Status:', response.status);
             const data = await response.json();
+            console.log('📥 Réponse:', data);
 
             if (response.ok) {
                 alert('Livraison créée avec succès!');
                 navigate('/admin/dashboard/delivery-queue');
             } else {
-                alert(`Erreur: ${data.error || 'Erreur lors de la création'}`);
+                console.error('❌ Erreur backend:', data);
+                alert(`Erreur: ${data.error || data.message || JSON.stringify(data)}`);
             }
         } catch (error) {
+            console.error('❌ Erreur complète:', error);
             alert('Erreur lors de la création de la livraison');
-            console.error(error);
         } finally {
             setLoading(false);
         }
     };
 
     const zones = [
-        'DAKAR_PLATEAU', 'DAKAR_MEDINA', 'DAKAR_PARCELLES',
-        'DAKAR_LIBERTE', 'DAKAR_GRAND_YOFF', 'DAKAR_OUAKAM',
-        'PIKINE_CENTRE', 'GUEDIAWAYE', 'RUFISQUE'
+        // Département de Dakar
+        { label: 'Biscuiterie', value: 'Biscuiterie', dept: 'Dakar' },
+        { label: 'Cambérène', value: 'Cambérène', dept: 'Dakar' },
+        { label: 'Dakar-Plateau', value: 'Dakar-Plateau', dept: 'Dakar' },
+        { label: 'Dieuppeul-Derklé', value: 'Dieuppeul-Derklé', dept: 'Dakar' },
+        { label: 'Fann-Point E-Amitié', value: 'Fann-Point E-Amitié', dept: 'Dakar' },
+        { label: 'Grand Dakar', value: 'Grand Dakar', dept: 'Dakar' },
+        { label: 'Grand Yoff', value: 'Grand Yoff', dept: 'Dakar' },
+        { label: 'Gueule Tapée-Fass-Colobane', value: 'Gueule Tapée-Fass-Colobane', dept: 'Dakar' },
+        { label: 'Hann Bel-Air', value: 'Hann Bel-Air', dept: 'Dakar' },
+        { label: 'HLM', value: 'HLM', dept: 'Dakar' },
+        { label: 'Les Parcelles Assainies', value: 'Les Parcelles Assainies', dept: 'Dakar' },
+        { label: 'Médina', value: 'Médina', dept: 'Dakar' },
+        { label: 'Mermoz-Sacré-Cœur', value: 'Mermoz-Sacré-Cœur', dept: 'Dakar' },
+        { label: 'Ngor', value: 'Ngor', dept: 'Dakar' },
+        { label: 'Ouakam', value: 'Ouakam', dept: 'Dakar' },
+        { label: 'Patte d\'Oie', value: 'Patte d\'Oie', dept: 'Dakar' },
+        { label: 'Sicap-Liberté', value: 'Sicap-Liberté', dept: 'Dakar' },
+        { label: 'Yoff', value: 'Yoff', dept: 'Dakar' },
+        // Département de Pikine
+        { label: 'Dalifort', value: 'Dalifort', dept: 'Pikine' },
+        { label: 'Diamaguène Sicap Mbao', value: 'Diamaguène Sicap Mbao', dept: 'Pikine' },
+        { label: 'Djidah Thiaroye Kaw', value: 'Djidah Thiaroye Kaw', dept: 'Pikine' },
+        { label: 'Guinaw Rail Nord', value: 'Guinaw Rail Nord', dept: 'Pikine' },
+        { label: 'Guinaw Rail Sud', value: 'Guinaw Rail Sud', dept: 'Pikine' },
+        { label: 'Keur Massar', value: 'Keur Massar', dept: 'Pikine' },
+        { label: 'Malika', value: 'Malika', dept: 'Pikine' },
+        { label: 'Mbao', value: 'Mbao', dept: 'Pikine' },
+        { label: 'Pikine Est', value: 'Pikine Est', dept: 'Pikine' },
+        { label: 'Pikine Nord', value: 'Pikine Nord', dept: 'Pikine' },
+        { label: 'Pikine Ouest', value: 'Pikine Ouest', dept: 'Pikine' },
+        { label: 'Thiaroye Gare', value: 'Thiaroye Gare', dept: 'Pikine' },
+        { label: 'Thiaroye-sur-Mer', value: 'Thiaroye-sur-Mer', dept: 'Pikine' },
+        { label: 'Tivaouane Diacksao', value: 'Tivaouane Diacksao', dept: 'Pikine' },
+        { label: 'Yeumbeul Nord', value: 'Yeumbeul Nord', dept: 'Pikine' },
+        { label: 'Yeumbeul Sud', value: 'Yeumbeul Sud', dept: 'Pikine' },
+        // Département de Guédiawaye
+        { label: 'Golf Sud', value: 'Golf Sud', dept: 'Guédiawaye' },
+        { label: 'Médina Gounass', value: 'Médina Gounass', dept: 'Guédiawaye' },
+        { label: 'Ndiarème Limamoulaye', value: 'Ndiarème Limamoulaye', dept: 'Guédiawaye' },
+        { label: 'Sam Notaire', value: 'Sam Notaire', dept: 'Guédiawaye' },
+        { label: 'Wakhinane Nimzatt', value: 'Wakhinane Nimzatt', dept: 'Guédiawaye' },
+        // Département de Rufisque
+        { label: 'Rufisque Est', value: 'Rufisque Est', dept: 'Rufisque' },
+        { label: 'Rufisque Nord', value: 'Rufisque Nord', dept: 'Rufisque' },
+        { label: 'Rufisque Ouest', value: 'Rufisque Ouest', dept: 'Rufisque' },
+        { label: 'Bargny', value: 'Bargny', dept: 'Rufisque' },
+        { label: 'Sébikotane', value: 'Sébikotane', dept: 'Rufisque' },
+        { label: 'Diamniadio', value: 'Diamniadio', dept: 'Rufisque' },
+        { label: 'Sangalkam', value: 'Sangalkam', dept: 'Rufisque' },
+        { label: 'Sendou', value: 'Sendou', dept: 'Rufisque' }
     ];
+
+    const groupedZones = zones.reduce((acc, zone) => {
+        if (!acc[zone.dept]) acc[zone.dept] = [];
+        acc[zone.dept].push(zone);
+        return acc;
+    }, {});
 
     return (
         <div className="p-6">
@@ -164,8 +227,12 @@ const DeliveryCreate = () => {
                                 className="w-full border border-gray-300 rounded-md px-3 py-2"
                             >
                                 <option value="">Sélectionner une zone</option>
-                                {zones.map(zone => (
-                                    <option key={zone} value={zone}>{zone.replace(/_/g, ' ')}</option>
+                                {Object.entries(groupedZones).map(([dept, deptZones]) => (
+                                    <optgroup key={dept} label={`Département de ${dept}`}>
+                                        {deptZones.map(zone => (
+                                            <option key={zone.value} value={zone.value}>{zone.label}</option>
+                                        ))}
+                                    </optgroup>
                                 ))}
                             </select>
                         </div>
@@ -230,8 +297,12 @@ const DeliveryCreate = () => {
                                 className="w-full border border-gray-300 rounded-md px-3 py-2"
                             >
                                 <option value="">Sélectionner une zone</option>
-                                {zones.map(zone => (
-                                    <option key={zone} value={zone}>{zone.replace(/_/g, ' ')}</option>
+                                {Object.entries(groupedZones).map(([dept, deptZones]) => (
+                                    <optgroup key={dept} label={`Département de ${dept}`}>
+                                        {deptZones.map(zone => (
+                                            <option key={zone.value} value={zone.value}>{zone.label}</option>
+                                        ))}
+                                    </optgroup>
                                 ))}
                             </select>
                         </div>
@@ -242,6 +313,21 @@ const DeliveryCreate = () => {
                 <div className="mb-6">
                     <h2 className="text-lg font-semibold mb-4 text-gray-900">📋 Détails</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Assigner à un coursier</label>
+                            <select
+                                value={formData.assignToCourier}
+                                onChange={(e) => setFormData({ ...formData, assignToCourier: e.target.value })}
+                                className="w-full border border-gray-300 rounded-md px-3 py-2"
+                            >
+                                <option value="">Sélectionner un coursier (optionnel)</option>
+                                {couriers.map(courier => (
+                                    <option key={courier._id} value={courier._id}>
+                                        {courier.name} - {courier.phone} ({courier.zone || 'Aucune zone'})
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Montant à collecter (XOF)</label>
                             <input

@@ -85,7 +85,7 @@ const CourierManagement = () => {
             const response = await fetch(`${API_URL}/api/admin/deliveries/${deliveryId}/assign`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${userInfo.token}`,
+                    'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
