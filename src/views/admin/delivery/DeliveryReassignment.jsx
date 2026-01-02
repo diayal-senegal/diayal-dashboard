@@ -80,7 +80,7 @@ const DeliveryReassignment = () => {
 
     try {
       setLoading(true);
-      const response = await fetch(`${API_URL}/api/admin/deliveries/${selectedDelivery.id}/reassign`, {
+      const response = await fetch(`${API_URL}/api/admin/deliveries/${selectedDelivery._id || selectedDelivery.id}/reassign`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -112,8 +112,8 @@ const DeliveryReassignment = () => {
   };
 
   const filteredDeliveries = deliveries.filter(delivery => 
-    delivery.id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    delivery.dropoff?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (delivery._id || delivery.id)?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (delivery.dropoff?.contactName || delivery.dropoff?.name)?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     delivery.assignedCourier?.name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -126,18 +126,34 @@ const DeliveryReassignment = () => {
 
   const getStatusColor = (status) => {
     const colors = {
+      'PICKUP_PENDING': 'bg-gray-100 text-gray-800',
       'ASSIGNED': 'bg-blue-100 text-blue-800',
+      'ACCEPTED': 'bg-green-100 text-green-800',
+      'REJECTED': 'bg-red-100 text-red-800',
       'PICKED_UP': 'bg-yellow-100 text-yellow-800',
+      'EN_ROUTE': 'bg-orange-100 text-orange-800',
+      'ARRIVED': 'bg-teal-100 text-teal-800',
       'IN_TRANSIT': 'bg-purple-100 text-purple-800',
+      'DELIVERED': 'bg-green-100 text-green-800',
+      'FAILED': 'bg-red-100 text-red-800',
+      'CANCELED': 'bg-gray-100 text-gray-800'
     };
     return colors[status] || 'bg-gray-100 text-gray-800';
   };
 
   const getStatusText = (status) => {
     const texts = {
+      'PICKUP_PENDING': 'En attente',
       'ASSIGNED': 'Assignée',
+      'ACCEPTED': 'Acceptée',
+      'REJECTED': 'Refusée',
       'PICKED_UP': 'Récupérée',
+      'EN_ROUTE': 'En route',
+      'ARRIVED': 'Arrivé',
       'IN_TRANSIT': 'En transit',
+      'DELIVERED': 'Livrée',
+      'FAILED': 'Échec',
+      'CANCELED': 'Annulée'
     };
     return texts[status] || status;
   };
@@ -154,7 +170,10 @@ const DeliveryReassignment = () => {
   };
 
   const getAvailableCouriers = () => {
-    return couriers.filter(c => c.isAvailable && c.zone === selectedDelivery?.dropoff?.zone);
+    return couriers.filter(c => 
+      (c.availability === 'available' || c.isAvailable) && 
+      (!selectedDelivery?.dropoff?.zone || c.currentZone === selectedDelivery?.dropoff?.zone || !c.currentZone)
+    );
   };
 
   return (
@@ -246,13 +265,13 @@ const DeliveryReassignment = () => {
                   const duration = assignedTime ? Math.floor((new Date() - assignedTime) / 60000) : 0;
                   
                   return (
-                    <tr key={delivery.id} className="border-b border-slate-200 hover:bg-gray-50">
-                      <td className="py-3 px-4 font-medium">#{delivery.id?.slice(-8)}</td>
+                    <tr key={delivery._id || delivery.id} className="border-b border-slate-200 hover:bg-gray-50">
+                      <td className="py-3 px-4 font-medium">#{(delivery._id || delivery.id)?.slice(-8)}</td>
                       <td className="py-3 px-4">
                         <div className="flex items-center space-x-2">
                           <FaUser className="text-gray-400" />
                           <div>
-                            <div className="font-medium">{delivery.dropoff?.name}</div>
+                            <div className="font-medium">{delivery.dropoff?.contactName || delivery.dropoff?.name}</div>
                             <div className="text-xs text-gray-500 flex items-center">
                               <FaPhone className="mr-1" />
                               {delivery.dropoff?.phone}
@@ -302,7 +321,7 @@ const DeliveryReassignment = () => {
                           <button
                             onClick={() => {
                               setSelectedDelivery(delivery);
-                              loadDeliveryHistory(delivery.id);
+                              loadDeliveryHistory(delivery._id || delivery.id);
                               setShowDetailsModal(true);
                             }}
                             className="p-2 text-blue-600 hover:bg-blue-50 rounded"
@@ -341,13 +360,13 @@ const DeliveryReassignment = () => {
           <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <h3 className="text-xl font-semibold mb-4 flex items-center">
               <FaExchangeAlt className="mr-2" />
-              Réassigner la livraison #{selectedDelivery?.id?.slice(-8)}
+              Réassigner la livraison #{(selectedDelivery?._id || selectedDelivery?.id)?.slice(-8)}
             </h3>
             
             <div className="grid grid-cols-2 gap-4 mb-4 p-4 bg-gray-50 rounded">
               <div>
                 <p className="text-sm text-gray-600">Client</p>
-                <p className="font-medium">{selectedDelivery?.dropoff?.name}</p>
+                <p className="font-medium">{selectedDelivery?.dropoff?.contactName || selectedDelivery?.dropoff?.name}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-600">Téléphone</p>
@@ -399,8 +418,8 @@ const DeliveryReassignment = () => {
               >
                 <option value="">Sélectionner un coursier</option>
                 {getAvailableCouriers().map((courier) => (
-                  <option key={courier._id} value={courier._id}>
-                    {courier.name} - {courier.zone} ({courier.vehicleType}) - {courier.phone}
+                  <option key={courier._id || courier.id} value={courier._id || courier.id}>
+                    {courier.name} - {courier.currentZone || 'Aucune zone'} ({courier.vehicle?.type || 'N/A'}) - {courier.phone}
                   </option>
                 ))}
               </select>
@@ -440,14 +459,14 @@ const DeliveryReassignment = () => {
       {showDetailsModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto">
-            <h3 className="text-xl font-semibold mb-4">Détails de la livraison #{selectedDelivery?.id?.slice(-8)}</h3>
+            <h3 className="text-xl font-semibold mb-4">Détails de la livraison #{(selectedDelivery?._id || selectedDelivery?.id)?.slice(-8)}</h3>
             
             <div className="grid grid-cols-2 gap-6 mb-6">
               <div className="space-y-4">
                 <div>
                   <h4 className="font-semibold text-gray-700 mb-2">📦 Récupération</h4>
                   <div className="bg-gray-50 p-3 rounded">
-                    <p className="text-sm"><strong>Contact:</strong> {selectedDelivery?.pickup?.name}</p>
+                    <p className="text-sm"><strong>Contact:</strong> {selectedDelivery?.pickup?.contactName || selectedDelivery?.pickup?.name}</p>
                     <p className="text-sm"><strong>Téléphone:</strong> {selectedDelivery?.pickup?.phone}</p>
                     <p className="text-sm"><strong>Adresse:</strong> {selectedDelivery?.pickup?.addressText}</p>
                   </div>
@@ -456,7 +475,7 @@ const DeliveryReassignment = () => {
                 <div>
                   <h4 className="font-semibold text-gray-700 mb-2">🚚 Livraison</h4>
                   <div className="bg-gray-50 p-3 rounded">
-                    <p className="text-sm"><strong>Contact:</strong> {selectedDelivery?.dropoff?.name}</p>
+                    <p className="text-sm"><strong>Contact:</strong> {selectedDelivery?.dropoff?.contactName || selectedDelivery?.dropoff?.name}</p>
                     <p className="text-sm"><strong>Téléphone:</strong> {selectedDelivery?.dropoff?.phone}</p>
                     <p className="text-sm"><strong>Adresse:</strong> {selectedDelivery?.dropoff?.addressText}</p>
                   </div>
