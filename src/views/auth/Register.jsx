@@ -7,6 +7,8 @@ import { PropagateLoader } from 'react-spinners';
 import { overrideStyle } from '../../utils/utils';
 import { seller_register,messageClear } from '../../store/Reducers/authReducer';
 import toast from 'react-hot-toast';
+import { validatePassword } from '../../utils/passwordValidation';
+import PasswordStrengthIndicator from '../../components/PasswordStrengthIndicator';
 
 const Register = () => {
 
@@ -39,6 +41,14 @@ const Register = () => {
             toast.error('Vous devez accepter les termes et conditions pour vous inscrire')
             return
         }
+        
+        // Validation du mot de passe
+        const passwordValidation = validatePassword(state.password);
+        if (!passwordValidation.isValid) {
+            passwordValidation.errors.forEach(error => toast.error(error));
+            return;
+        }
+        
         dispatch(seller_register(state))
     }
 
@@ -102,6 +112,7 @@ const Register = () => {
                     placeholder='Mot de passe' 
                     id='password' 
                     required 
+                    minLength={8}
                 />
                 <button
                     type="button"
@@ -110,6 +121,10 @@ const Register = () => {
                 >
                     {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </button>
+            </div>
+            <PasswordStrengthIndicator password={state.password} />
+            <div className='text-xs text-gray-300 mt-1'>
+                💡 Min. 8 caractères avec majuscule, minuscule, chiffre et caractère spécial
             </div>
         </div>
 

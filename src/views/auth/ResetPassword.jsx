@@ -6,6 +6,8 @@ import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { overrideStyle } from '../../utils/utils';
 import { seller_reset_password, messageClear } from '../../store/Reducers/authReducer';
+import { validatePassword } from '../../utils/passwordValidation';
+import PasswordStrengthIndicator from '../../components/PasswordStrengthIndicator';
 
 const ResetPassword = () => {
     const { token } = useParams();
@@ -35,8 +37,10 @@ const ResetPassword = () => {
             return;
         }
 
-        if (formData.password.length < 6) {
-            toast.error('Le mot de passe doit contenir au moins 6 caractères');
+        // Validation du mot de passe robuste
+        const passwordValidation = validatePassword(formData.password);
+        if (!passwordValidation.isValid) {
+            passwordValidation.errors.forEach(error => toast.error(error));
             return;
         }
 
@@ -95,7 +99,7 @@ const ResetPassword = () => {
                                     id='password' 
                                     placeholder='••••••••' 
                                     required 
-                                    minLength={6}
+                                    minLength={8}
                                 />
                                 <button
                                     type='button'
@@ -104,6 +108,10 @@ const ResetPassword = () => {
                                 >
                                     {showPassword ? <FaEyeSlash /> : <FaEye />}
                                 </button>
+                            </div>
+                            <PasswordStrengthIndicator password={formData.password} />
+                            <div className='text-xs text-gray-300 mt-1'>
+                                💡 Min. 8 caractères avec majuscule, minuscule, chiffre et caractère spécial
                             </div>
                         </div>
 
@@ -119,7 +127,7 @@ const ResetPassword = () => {
                                     id='confirmPassword' 
                                     placeholder='••••••••' 
                                     required 
-                                    minLength={6}
+                                    minLength={8}
                                 />
                                 <button
                                     type='button'
