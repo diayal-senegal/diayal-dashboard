@@ -18,6 +18,7 @@ const DealsManager = lazy(()=> import('../../views/admin/DealsManager'))
 const CustomerSupport = lazy(()=> import('../../views/admin/CustomerSupport'))
 const ContactMessages = lazy(()=> import('../../views/admin/ContactMessages'))
 const CommissionsPage = lazy(()=> import('../../views/admin/CommissionsPage'))
+const DeliveryCommissionsPage = lazy(()=> import('../../views/admin/DeliveryCommissionsPage'))
 const RevenueAnalytics = lazy(()=> import('../../views/admin/RevenueAnalytics'))  
 const DeliveryQueue = lazy(()=> import('../../views/admin/delivery/DeliveryQueue'))
 const DeliveryDetail = lazy(()=> import('../../views/admin/delivery/DeliveryDetail'))
@@ -125,6 +126,11 @@ export const adminRoutes = [
     {
         path: 'admin/dashboard/commissions',
         element : <CommissionsPage/> ,
+        role : 'admin'
+    },
+    {
+        path: 'admin/dashboard/delivery-commissions',
+        element : <DeliveryCommissionsPage/> ,
         role : 'admin'
     },
     {

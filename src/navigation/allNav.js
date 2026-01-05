@@ -130,10 +130,17 @@ export const allNav = [
     },
     {
         id : 27,
-        title : 'Commissions',
+        title : 'Commissions Ventes',
         icon : <FaMoneyBillWave />,
         role : 'admin',
         path: '/admin/dashboard/commissions'
+    },
+    {
+        id : 28,
+        title : 'Commissions Livraisons',
+        icon : <FaTruck />,
+        role : 'admin',
+        path: '/admin/dashboard/delivery-commissions'
     },
     {
         id : 29,
