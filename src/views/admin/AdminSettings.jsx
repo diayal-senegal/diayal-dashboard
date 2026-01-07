@@ -48,7 +48,7 @@ const AdminSettings = () => {
     };
 
     useEffect(() => {
-        if (successMessage) {
+        if (successMessage && activeTab === 'password') {
             toast.success(successMessage);
             setState({
                 oldPassword: '',
@@ -57,11 +57,11 @@ const AdminSettings = () => {
             });
             dispatch(messageClear());
         }
-        if (errorMessage) {
+        if (errorMessage && activeTab === 'password') {
             toast.error(errorMessage);
             dispatch(messageClear());
         }
-    }, [successMessage, errorMessage]);
+    }, [successMessage, errorMessage, activeTab]);
 
     const tabs = [
         { id: 'password', label: 'Mot de passe', icon: FaLock },
