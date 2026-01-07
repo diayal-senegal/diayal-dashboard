@@ -38,10 +38,8 @@ const VendorTeaser = () => {
             setLoading(true);
             
             // Charger les statistiques
-            const baseURL = process.env.NODE_ENV === 'production' 
-                ? 'https://diayal-backend.onrender.com/api' 
-                : 'http://localhost:5000/api';
-            const statsResponse = await fetch(`${baseURL}/vendor-teaser/stats`);
+            const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+            const statsResponse = await fetch(`${API_URL}/api/vendor-teaser/stats`);
             if (statsResponse.ok) {
                 const statsData = await statsResponse.json();
                 setStats({
@@ -52,7 +50,7 @@ const VendorTeaser = () => {
             }
             
             // Charger la liste des vendeurs
-            const vendorsResponse = await fetch(`${baseURL}/vendor-teaser/list`);
+            const vendorsResponse = await fetch(`${API_URL}/api/vendor-teaser/list`);
             if (vendorsResponse.ok) {
                 const vendorsData = await vendorsResponse.json();
                 setVendors(vendorsData.vendors || []);

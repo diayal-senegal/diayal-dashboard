@@ -5,7 +5,6 @@ import { jwtDecode } from "jwt-decode";
 export const admin_login = createAsyncThunk(
     'auth/admin_login',
     async(info,{rejectWithValue, fulfillWithValue}) => {
-         console.log(info)
         try {
             const {data} = await api.post('/admin-login',info,{withCredentials: true})
             // Token stocké dans cookie httpOnly par le backend
@@ -20,10 +19,8 @@ export const admin_login = createAsyncThunk(
 export const seller_login = createAsyncThunk(
     'auth/seller_login',
     async(info,{rejectWithValue, fulfillWithValue}) => {
-         console.log(info)
         try {
             const {data} = await api.post('/seller-login',info,{withCredentials: true})
-            console.log(data)
             // Token stocké dans cookie httpOnly par le backend
             return fulfillWithValue(data)
         } catch (error) {
@@ -68,7 +65,6 @@ export const seller_register = createAsyncThunk(
     'auth/seller_register',
     async(info,{rejectWithValue, fulfillWithValue}) => { 
         try {
-            console.log(info)
             const {data} = await api.post('/seller-register',info,{withCredentials: true})
             // Token stocké dans cookie httpOnly par le backend
             return fulfillWithValue(data)

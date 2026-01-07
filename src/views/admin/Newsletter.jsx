@@ -35,8 +35,9 @@ const Newsletter = () => {
     
     const loadNewsletterData = async () => {
         try {
-            const statsResponse = await fetch('http://localhost:5000/api/newsletter/stats')
-            const subscribersResponse = await fetch('http://localhost:5000/api/newsletter/subscribers')
+            const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+            const statsResponse = await fetch(`${API_URL}/api/newsletter/stats`)
+            const subscribersResponse = await fetch(`${API_URL}/api/newsletter/subscribers`)
             
             if (statsResponse.ok) {
                 const statsData = await statsResponse.json()
@@ -96,7 +97,8 @@ const Newsletter = () => {
 
     const deleteSubscriber = async (id) => {
         try {
-            const response = await fetch(`http://localhost:5000/api/newsletter/subscriber/${id}`, { 
+            const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+            const response = await fetch(`${API_URL}/api/newsletter/subscriber/${id}`, { 
                 method: 'DELETE' 
             });
             
@@ -115,9 +117,10 @@ const Newsletter = () => {
         if (selectedSubscribers.length === 0) return;
         
         try {
+            const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
             // Supprimer chaque abonné sélectionné
             for (const id of selectedSubscribers) {
-                await fetch(`http://localhost:5000/api/newsletter/subscriber/${id}`, { 
+                await fetch(`${API_URL}/api/newsletter/subscriber/${id}`, { 
                     method: 'DELETE' 
                 });
             }
