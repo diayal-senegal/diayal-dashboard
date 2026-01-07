@@ -26,6 +26,7 @@ const DeliveryCreate = lazy(()=> import('../../views/admin/delivery/DeliveryCrea
 const CourierManagement = lazy(()=> import('../../views/admin/delivery/CourierManagement'))  
 const DeliveryReassignment = lazy(()=> import('../../views/admin/delivery/DeliveryReassignment'))
 const DeliveryTracking = lazy(()=> import('../../views/admin/delivery/DeliveryTracking'))  
+const AdminSettings = lazy(()=> import('../../views/admin/AdminSettings'))  
 
 export const adminRoutes = [
     {
@@ -166,6 +167,11 @@ export const adminRoutes = [
     {
         path: 'admin/dashboard/delivery-tracking',
         element : <DeliveryTracking/> ,
+        role : 'admin'
+    },
+    {
+        path: 'admin/dashboard/settings',
+        element : <AdminSettings/> ,
         role : 'admin'
     },
  

@@ -20,7 +20,7 @@ import { FaHeadset } from "react-icons/fa";
 import { FaEnvelope } from "react-icons/fa";
 import { FaMoneyBillWave } from "react-icons/fa";
 import { FaBell } from "react-icons/fa";
-import { FaTruck, FaRoute, FaUsersCog } from "react-icons/fa";
+import { FaTruck, FaRoute, FaUsersCog, FaCog } from "react-icons/fa";
 
 export const allNav = [
     {
@@ -169,6 +169,13 @@ export const allNav = [
         icon : <FaTruck />,
         role : 'admin',
         path: '/admin/dashboard/delivery-tracking'
+    },
+    {
+        id : 33,
+        title : 'Paramètres',
+        icon : <FaCog />,
+        role : 'admin',
+        path: '/admin/dashboard/settings'
     },
     {
         id : 9,
