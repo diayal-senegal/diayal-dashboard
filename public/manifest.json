@@ -3,7 +3,7 @@
   "name": "Diayal - Marketplace Sénégalaise",
   "icons": [
     {
-      "src": "images/favicon_diayal.svg",
+      "src": "favicon.svg",
       "sizes": "any",
       "type": "image/svg+xml"
     }
