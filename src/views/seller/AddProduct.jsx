@@ -33,19 +33,26 @@ const AddProduct = () => {
     
     })
 
+    const [cateShow, setCateShow] = useState(false)
+    const [category, setCategory] = useState('')
+    const [allCategory, setAllCategory] = useState([])
+    const [searchValue, setSearchValue] = useState('')
+    const [isUniqueItem, setIsUniqueItem] = useState(false)
+    const [images, setImages] = useState([])
+    const [imageShow, setImageShow] = useState([])
+
     const inputHandle = (e) => {
         setState({
             ...state,
             [e.target.name] : e.target.value
         })
-
     }
 
-    const [cateShow, setCateShow] = useState(false)
-    const [category, setCategory] = useState('')
-    const [allCategory, setAllCategory] = useState([])
-    const [searchValue, setSearchValue] = useState('') 
-  
+    useEffect(() => {
+        if (isUniqueItem) {
+            setState(prev => ({ ...prev, stock: '1' }))
+        }
+    }, [isUniqueItem]) 
     const categorySearch = (e) => {
         const value = e.target.value
         setSearchValue(value)
@@ -57,9 +64,6 @@ const AddProduct = () => {
         }
 
     }
-
-    const [images, setImages] = useState([])
-    const [imageShow, setImageShow] = useState([])
 
     const imageHandle = (e) => {
         const files = e.target.files 
@@ -92,6 +96,7 @@ const AddProduct = () => {
             setImageShow([])
             setImages([])
             setCategory('')
+            setIsUniqueItem(false)
 
         }
         if (errorMessage) {
@@ -134,6 +139,7 @@ const AddProduct = () => {
         formData.append('brand',state.brand)
         formData.append('shopName','') 
         formData.append('category',category)
+        formData.append('isUniqueItem',isUniqueItem)
 
         for (let i = 0; i < images.length; i++) {
             formData.append('images',images[i]) 
@@ -184,7 +190,7 @@ const AddProduct = () => {
                     <div className='pt-14'></div>
                     <div className='flex justify-start items-start flex-col h-[200px] overflow-x-scrool'>
                         {
-                            allCategory.map((c,i) => <span className={`px-4 py-2 hover:bg-indigo-500 hover:text-white hover:shadow-lg w-full cursor-pointer ${category === c.name && 'bg-indigo-500'}`} onClick={()=> {
+                            allCategory.map((c,i) => <span key={i} className={`px-4 py-2 hover:bg-indigo-500 hover:text-white hover:shadow-lg w-full cursor-pointer ${category === c.name && 'bg-indigo-500'}`} onClick={()=> {
                                 setCateShow(false)
                                 setCategory(c.name)
                                 setSearchValue('')
@@ -198,9 +204,22 @@ const AddProduct = () => {
 
             <div className='flex flex-col w-full gap-1'>
                 <label htmlFor="stock">Stock article</label>
-                <input className='px-4 py-2 focus:border-indigo-500 outline-none bg-[#6a5fdf] border border-slate-700 rounded-md text-[#d0d2d6]' onChange={inputHandle} value={state.stock} type="text" name='stock' id='stock' placeholder='Stock' />
+                <input className='px-4 py-2 focus:border-indigo-500 outline-none bg-[#6a5fdf] border border-slate-700 rounded-md text-[#d0d2d6]' onChange={inputHandle} value={state.stock} type="text" name='stock' id='stock' placeholder='Stock' disabled={isUniqueItem} />
             </div>   
 
+        </div>
+
+        <div className='flex items-center gap-2 mb-3 text-[#d0d2d6]'>
+            <input 
+                type="checkbox" 
+                id="uniqueItem" 
+                checked={isUniqueItem}
+                onChange={(e) => setIsUniqueItem(e.target.checked)}
+                className='w-4 h-4 cursor-pointer accent-amber-500'
+            />
+            <label htmlFor="uniqueItem" className='cursor-pointer select-none'>
+                Pièce unique (stock automatiquement fixé à 1)
+            </label>
         </div>
 
 
@@ -225,12 +244,17 @@ const AddProduct = () => {
 
             <div className='grid lg:grid-cols-4 grid-cols-1 md:grid-cols-3 sm:grid-cols-2 sm:gap-4 md:gap-4 gap-3 w-full text-[#d0d2d6] mb-4'>
                {
-                imageShow.map((img,i) => <div className='h-[180px] relative'>
+                imageShow.map((img,i) => <div key={i} className='h-[180px] relative'>
                     <label htmlFor={i}>
                         <img className='w-full h-full rounded-sm' src={img.url} alt="" />
                     </label>
                     <input onChange={(e)=> changeImage(e.target.files[0],i) } type="file" id={i} className='hidden'/>
                     <span onClick={()=>removeImage(i)} className='p-2 z-10 cursor-pointer bg-slate-700 hover:shadow-lg hover:shadow-slate-400/50 text-white absolute top-1 right-1 rounded-full'><IoMdCloseCircle /></span>
+                    {isUniqueItem && (
+                        <span className='absolute top-10 left-1 bg-gradient-to-r from-amber-500 to-orange-600 text-white px-2 py-1 text-xs font-bold rounded shadow-lg z-10'>
+                            PIÈCE UNIQUE
+                        </span>
+                    )}
                 </div> )
                }
                
