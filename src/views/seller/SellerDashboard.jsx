@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { MdOutlineCurrencyFranc, MdProductionQuantityLimits, MdTrendingUp, MdTrendingDown, MdPending } from "react-icons/md";
-import { FaUsers, FaQuestionCircle, FaEye, FaComments, FaShoppingCart } from "react-icons/fa";
+import { FaUsers, FaQuestionCircle, FaEye, FaComments, FaShoppingCart, FaBook, FaPlayCircle, FaFileAlt, FaLightbulb } from "react-icons/fa";
 import { FaCartShopping } from "react-icons/fa6"; 
 import Chart from 'react-apexcharts'
 import { Link } from 'react-router-dom';
@@ -233,6 +233,17 @@ const SellerDashboard = () => {
                         <FaQuestionCircle />
                         FAQ Vendeur
                     </button>
+                    <button
+                        onClick={() => setActiveTab('guide')}
+                        className={`px-6 py-4 font-medium text-sm border-b-2 transition-colors duration-200 flex items-center gap-2 ${
+                            activeTab === 'guide'
+                                ? 'border-blue-500 text-blue-600 bg-blue-50'
+                                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                        }`}
+                    >
+                        <FaBook />
+                        Guide Utilisateur
+                    </button>
                 </div>
             </div>
 
@@ -423,6 +434,112 @@ const SellerDashboard = () => {
             {activeTab === 'faq' && (
                 <div className='bg-white rounded-2xl shadow-lg p-6'>
                     <SellerFAQ />
+                </div>
+            )}
+
+            {activeTab === 'guide' && (
+                <div className='space-y-6'>
+                    {/* Section Vidéo */}
+                    <div className='bg-white rounded-2xl shadow-lg p-6'>
+                        <div className='flex items-center mb-6'>
+                            <FaPlayCircle className='text-blue-500 text-2xl mr-3' />
+                            <h2 className='text-2xl font-bold text-gray-800'>Vidéo Explicative</h2>
+                        </div>
+                        <div className='aspect-video bg-gray-100 rounded-xl overflow-hidden shadow-inner'>
+                            <iframe
+                                className='w-full h-full'
+                                src='https://www.youtube.com/embed/dQw4w9WgXcQ'
+                                title='Guide Vendeur'
+                                frameBorder='0'
+                                allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
+                                allowFullScreen
+                            ></iframe>
+                        </div>
+                        <p className='mt-4 text-gray-600 text-sm'>Cette vidéo vous guide à travers les fonctionnalités principales de votre tableau de bord vendeur.</p>
+                    </div>
+
+                    {/* Sections d'Information */}
+                    <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
+                        {/* Démarrage Rapide */}
+                        <div className='bg-white rounded-2xl shadow-lg p-6'>
+                            <div className='flex items-center mb-4'>
+                                <FaLightbulb className='text-yellow-500 text-xl mr-3' />
+                                <h3 className='text-xl font-bold text-gray-800'>Démarrage Rapide</h3>
+                            </div>
+                            <div className='space-y-3'>
+                                <div className='flex items-start'>
+                                    <span className='flex-shrink-0 w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3'>1</span>
+                                    <p className='text-gray-700 text-sm'>Ajoutez vos premiers produits dans la section "+ Ajouter articles"</p>
+                                </div>
+                                <div className='flex items-start'>
+                                    <span className='flex-shrink-0 w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3'>2</span>
+                                    <p className='text-gray-700 text-sm'>Complétez la fiche de votre boutique et de paiement mobile</p>
+                                </div>
+                                <div className='flex items-start'>
+                                    <span className='flex-shrink-0 w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3'>3</span>
+                                    <p className='text-gray-700 text-sm'>Gérez vos commandes depuis l'onglet "Commandes"</p>
+                                </div>
+                                <div className='flex items-start'>
+                                    <span className='flex-shrink-0 w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3'>4</span>
+                                    <p className='text-gray-700 text-sm'>Suivez vos performances avec les statistiques en temps réel</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Bonnes Pratiques */}
+                        <div className='bg-white rounded-2xl shadow-lg p-6'>
+                            <div className='flex items-center mb-4'>
+                                <FaFileAlt className='text-green-500 text-xl mr-3' />
+                                <h3 className='text-xl font-bold text-gray-800'>Bonnes Pratiques</h3>
+                            </div>
+                            <div className='space-y-3'>
+                                <div className='p-3 bg-green-50 rounded-lg'>
+                                    <p className='text-sm font-semibold text-gray-800 mb-1'>✓ Photos de qualité</p>
+                                    <p className='text-xs text-gray-600'>Utilisez des images claires et professionnelles pour vos produits</p>
+                                </div>
+                                <div className='p-3 bg-green-50 rounded-lg'>
+                                    <p className='text-sm font-semibold text-gray-800 mb-1'>✓ Descriptions détaillées</p>
+                                    <p className='text-xs text-gray-600'>Fournissez des informations complètes sur vos articles</p>
+                                </div>
+                                <div className='p-3 bg-green-50 rounded-lg'>
+                                    <p className='text-sm font-semibold text-gray-800 mb-1'>✓ Réponse rapide</p>
+                                    <p className='text-xs text-gray-600'>Répondez aux messages clients dans les 24 heures</p>
+                                </div>
+                                <div className='p-3 bg-green-50 rounded-lg'>
+                                    <p className='text-sm font-semibold text-gray-800 mb-1'>✓ Mise à jour régulière</p>
+                                    <p className='text-xs text-gray-600'>Actualisez vos stocks et prix fréquemment</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Ressources Supplémentaires */}
+                    <div className='bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl shadow-lg p-6'>
+                        <h3 className='text-xl font-bold text-gray-800 mb-4'>Ressources Supplémentaires</h3>
+                        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
+                            <a href='#' className='bg-white p-4 rounded-xl shadow hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1'>
+                                <div className='flex items-center mb-2'>
+                                    <FaBook className='text-blue-500 mr-2' />
+                                    <h4 className='font-semibold text-gray-800'>Documentation</h4>
+                                </div>
+                                <p className='text-sm text-gray-600'>Guide complet de la plateforme</p>
+                            </a>
+                            <a href='#' className='bg-white p-4 rounded-xl shadow hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1'>
+                                <div className='flex items-center mb-2'>
+                                    <FaPlayCircle className='text-red-500 mr-2' />
+                                    <h4 className='font-semibold text-gray-800'>Tutoriels Vidéo</h4>
+                                </div>
+                                <p className='text-sm text-gray-600'>Série de vidéos explicatives</p>
+                            </a>
+                            <a href='#' className='bg-white p-4 rounded-xl shadow hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1'>
+                                <div className='flex items-center mb-2'>
+                                    <FaComments className='text-green-500 mr-2' />
+                                    <h4 className='font-semibold text-gray-800'>Support</h4>
+                                </div>
+                                <p className='text-sm text-gray-600'>Contactez notre équipe d'aide</p>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             )}
         </div>
