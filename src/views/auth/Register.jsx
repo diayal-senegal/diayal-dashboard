@@ -73,7 +73,7 @@ const Register = () => {
           <div className='w-[350px] text-[#ffffff] p-2'>
             <div className='bg-[#6f68d1] p-4 rounded-md'>
             <div className='w-[260px] h-[90px] mx-auto mb-4'>
-                <img className='w-full h-full' src="http://localhost:3001/images/logo.svg" alt="Diayal logo" />
+                <img className='w-full h-full' src="/images/logo.svg" alt="Diayal logo" />
             </div>
                 <h2 className='text-xl mb-3 font-bold'>Bienvenue sur Diayal</h2>
                 <p className='text-sm mb-3 font-medium'>Merci de vous insrire</p>
