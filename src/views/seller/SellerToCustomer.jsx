@@ -6,6 +6,7 @@ import { get_customer_message, get_customers,messageClear,send_message,updateMes
 import { clearChatCounts } from '../../store/Reducers/sellerReducer';
 import { Link, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import Avatar from '../../components/Avatar';
 
 import { socket } from '../../utils/utils';
 
@@ -107,14 +108,13 @@ const SellerToCustomer = () => {
                     {i + 1}
                 </div>
                 <div className='relative flex-shrink-0'>
-                    <img className='w-[42px] h-[42px] border-white border-2 max-w-[42px] p-[2px] rounded-full' 
-                        src={c.image ? `http://localhost:3000${c.image}` : '/images/admin.jpg'} 
-                        onError={(e) => {
-                            console.log('Image failed to load:', c.image)
-                            e.target.src = '/images/admin.jpg'
-                        }}
-                        alt="" />
-                    {c.isOnline && <div className='w-[12px] h-[12px] bg-green-500 rounded-full absolute -right-1 -bottom-1 border-2 border-white'></div>}
+                    <Avatar 
+                        type="customer" 
+                        image={c.image} 
+                        name={c.name} 
+                        size="sm" 
+                        showOnline={c.isOnline}
+                    />
                 </div>
         
                 <div className='flex justify-center items-start flex-col flex-1 min-w-0'>
@@ -135,13 +135,14 @@ const SellerToCustomer = () => {
         <div className='flex justify-between items-center'>
             {
                 sellerId && <div className='flex justify-start items-center gap-3'>
-           <div className='relative'>
-         <img className='w-[45px] h-[45px] border-green-500 border-2 max-w-[45px] p-[2px] rounded-full' 
-              src={currentCustomer?.image ? `http://localhost:3000${currentCustomer.image}` : '/images/admin.jpg'} 
-              onError={(e) => e.target.src = '/images/admin.jpg'}
-              alt="" />
-         <div className='w-[10px] h-[10px] bg-green-500 rounded-full absolute right-0 bottom-0'></div>
-        </div>
+           <Avatar 
+                type="customer" 
+                image={currentCustomer?.image} 
+                name={currentCustomer?.name} 
+                size="md" 
+                borderColor="green-500"
+                showOnline={true}
+           />
         <h2 className='text-base text-white font-semibold'>{currentCustomer?.name || 'Client'}</h2>
 
                 </div>
@@ -162,12 +163,12 @@ const SellerToCustomer = () => {
                 return (
                     <div key={i} ref={scrollRef} className='w-full flex justify-start items-center'>
                     <div className='flex justify-start items-start gap-2 md:px-3 py-2 max-w-full lg:max-w-[85%]'>
-                        <div>
-                            <img className='w-[38px] h-[38px] border-2 border-white rounded-full max-w-[38px] p-[3px]' 
-                                 src={currentCustomer?.image ? `http://localhost:3000${currentCustomer.image}` : '/images/admin.jpg'} 
-                                 onError={(e) => e.target.src = '/images/admin.jpg'}
-                                 alt="" />
-                        </div>
+                        <Avatar 
+                            type="customer" 
+                            image={currentCustomer?.image} 
+                            name={currentCustomer?.name} 
+                            size="sm" 
+                        />
                         <div className='flex justify-center items-start flex-col w-full bg-blue-500 shadow-lg shadow-blue-500/50 text-white py-1 px-2 rounded-sm'>
                         <span>{m.message} </span>
                         </div> 
@@ -183,15 +184,12 @@ const SellerToCustomer = () => {
                         <div className='flex justify-center items-start flex-col w-full bg-red-500 shadow-lg shadow-red-500/50 text-white py-1 px-2 rounded-sm'>
                         <span>{m.message} </span>
                         </div> 
-                        <div>
-                            <img className='w-[38px] h-[38px] border-2 border-white rounded-full max-w-[38px] p-[3px]' 
-                                 src={userInfo.image || '/images/admin.jpg'} 
-                                 onError={(e) => {
-                                     console.log('Seller image failed:', userInfo.image)
-                                     e.target.src = '/images/admin.jpg'
-                                 }}
-                                 alt="" />
-                        </div>
+                        <Avatar 
+                            type="seller" 
+                            image={userInfo.image} 
+                            name={userInfo.name} 
+                            size="sm" 
+                        />
 
                     </div> 
                 </div>

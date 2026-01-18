@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { get_admin_message, get_seller_message, get_sellers, send_message_seller_admin, updateAdminMessage,messageClear } from '../../store/Reducers/chatReducer'
 import { clearChatCounts } from '../../store/Reducers/sellerReducer';
+import Avatar from '../../components/Avatar';
 
 import {socket} from '../../utils/utils'
 
@@ -59,13 +60,12 @@ const SellerToAdmin = () => {
     <div className='w-full md:pl-4'>
         <div className='flex justify-between items-center'>
             <div className='flex justify-start items-center gap-3'>
-           <div className='relative'>
-         <img className='w-[45px] h-[45px] border-green-500 border-2 max-w-[45px] p-[2px] rounded-full' 
-              src="http://localhost:3000/images/admin.jpg" 
-              onError={(e) => e.target.src = '/images/admin.jpg'}
-              alt="" />
-         <div className='w-[10px] h-[10px] bg-green-500 rounded-full absolute right-0 bottom-0'></div>
-        </div>
+           <Avatar 
+                type="admin" 
+                size="md" 
+                borderColor="green-500"
+                showOnline={true}
+           />
         <h2 className='text-base text-white font-semibold'>Support</h2>
 
                 </div> 
@@ -81,15 +81,12 @@ const SellerToAdmin = () => {
                             return (
 <div ref={scrollRef} key={i} className='w-full flex justify-start items-center'>
         <div className='flex justify-start items-start gap-2 md:px-3 py-2 max-w-full lg:max-w-[85%]'>
-            <div>
-                <img className='w-[38px] h-[38px] border-2 border-white rounded-full max-w-[38px] p-[3px]' 
-                     src={userInfo.image ? `http://localhost:3000${userInfo.image}` : 'http://localhost:3001/images/admin.jpg'} 
-                     onError={(e) => {
-                         console.log('Seller image failed:', userInfo.image)
-                         e.target.src = 'http://localhost:3001/images/admin.jpg'
-                     }}
-                     alt="" />
-            </div>
+            <Avatar 
+                type="seller" 
+                image={userInfo.image} 
+                name={userInfo.name} 
+                size="sm" 
+            />
             <div className='flex justify-center items-start flex-col w-full bg-blue-500 shadow-lg shadow-blue-500/50 text-white py-1 px-2 rounded-sm'>
             <span>{m.message} </span>
             </div> 
@@ -105,12 +102,10 @@ const SellerToAdmin = () => {
                         <div className='flex justify-center items-start flex-col w-full bg-red-500 shadow-lg shadow-red-500/50 text-white py-1 px-2 rounded-sm'>
                         <span>{m.message}  </span>
                         </div> 
-                        <div>
-                            <img className='w-[38px] h-[38px] border-2 border-white rounded-full max-w-[38px] p-[3px]' 
-                                 src="http://localhost:3000/images/admin.jpg" 
-                                 onError={(e) => e.target.src = '/images/admin.jpg'}
-                                 alt="" />
-                        </div>
+                        <Avatar 
+                            type="admin" 
+                            size="sm" 
+                        />
 
                     </div> 
                 </div>
