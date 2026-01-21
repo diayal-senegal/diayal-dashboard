@@ -5,6 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import store from './store/index';
 import { Toaster } from 'react-hot-toast';
+import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
 import './index.css';
 const App = lazy(() => import('./App'));
@@ -28,6 +29,8 @@ root.render(
   </Provider>
   </BrowserRouter>
 );
+
+serviceWorkerRegistration.register();
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
