@@ -33,7 +33,7 @@ const Header = ({showSidebar, setShowSidebar}) => {
               </div>
 
               {
-                userInfo.role === 'admin' ? <img className='w-[50px] h-[50px] rounded-full overflow-hidden' src="http://localhost:3001/images/logo.svg" alt="" />  : <img className='w-[50px] h-[50px] rounded-full overflow-hidden' src={userInfo.image} alt="" />
+                userInfo.role === 'admin' ? <img className='w-[50px] h-[50px] rounded-full overflow-hidden' src="/images/logo.svg" alt="" />  : <img className='w-[50px] h-[50px] rounded-full overflow-hidden' src={userInfo.image} alt="" />
               }
               
 

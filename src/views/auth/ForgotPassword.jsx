@@ -36,7 +36,7 @@ const ForgotPassword = () => {
                 <div className='bg-[#6f68d1] p-4 rounded-md'>
                     <div className='h-[70px] flex justify-center items-center'>
                         <div className='w-[260px] h-[90px] mx-auto mb-4'>
-                            <img className='w-full h-full' src="http://localhost:3001/images/logo.svg" alt="Diayal logo" />
+                            <img className='w-full h-full' src="/images/logo.svg" alt="Diayal logo" />
                         </div>
                     </div>
 

@@ -56,7 +56,7 @@ const AdminLogin = () => {
                
         <div className='h-[70px] flex justify-center items-center'>
             <div className='w-[180px] h-[50px]'>
-                <img className='w-full h-full' src="http://localhost:3001/images/logo.svg" alt="image" />
+                <img className='w-full h-full' src="/images/logo.svg" alt="image" />
             </div>
             </div>       
 
