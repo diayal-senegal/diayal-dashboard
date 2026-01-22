@@ -190,6 +190,7 @@ export const authReducer = createSlice({
 
         messageClear : (state,_) => {
             state.errorMessage = ""
+            state.successMessage = ""
         },
         
         resetAuth : (state) => {
