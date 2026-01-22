@@ -3,7 +3,12 @@ import { useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
 
 const ProtectRoute = ({route,children}) => {
-    const {role, userInfo} = useSelector(state => state.auth)
+    const {role, userInfo, authChecked} = useSelector(state => state.auth)
+
+    // Attendre la vérification de l'authentification
+    if (!authChecked) {
+        return null // ou un loader si vous voulez
+    }
 
     if (role) {
         if (route.role) {

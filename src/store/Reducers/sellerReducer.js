@@ -174,6 +174,18 @@ export const get_chat_counts = createAsyncThunk(
     }
 );
 
+export const clear_chat_counts_backend = createAsyncThunk(
+    'seller/clear_chat_counts_backend',
+    async({type}, {rejectWithValue, fulfillWithValue}) => {
+        try {
+            const {data} = await api.put('/chat-counts/clear', {type}, {withCredentials: true});
+            return fulfillWithValue({data, type});
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
 export const sellerReducer = createSlice({
     name: 'seller',
     initialState:{
@@ -203,6 +215,15 @@ export const sellerReducer = createSlice({
                 state.chatCounts.customerMessages = 0;
             } else if (type === 'support') {
                 state.chatCounts.supportMessages = 0;
+            }
+        },
+        
+        incrementChatCount: (state, action) => {
+            const { type } = action.payload;
+            if (type === 'customer') {
+                state.chatCounts.customerMessages += 1;
+            } else if (type === 'support') {
+                state.chatCounts.supportMessages += 1;
             }
         }
 
@@ -259,9 +280,17 @@ export const sellerReducer = createSlice({
         .addCase(get_chat_counts.fulfilled, (state, { payload }) => {
             state.chatCounts = payload;
         })
+        .addCase(clear_chat_counts_backend.fulfilled, (state, { payload }) => {
+            const { type } = payload;
+            if (type === 'customer') {
+                state.chatCounts.customerMessages = 0;
+            } else if (type === 'support') {
+                state.chatCounts.supportMessages = 0;
+            }
+        })
 
     }
 
 })
-export const {messageClear, clearChatCounts} = sellerReducer.actions
+export const {messageClear, clearChatCounts, incrementChatCount} = sellerReducer.actions
 export default sellerReducer.reducer

@@ -10,10 +10,11 @@ import { get_admin_dashboard_data } from '../../store/Reducers/dashboardReducer'
 import moment from 'moment';
 import toast from 'react-hot-toast';
 import api from '../../api/api';
+import Avatar from '../../components/Avatar';
 
 const AdminDashboard = () => {
     const dispatch = useDispatch()
-    const {totalSale,totalOrder,totalProduct,totalSeller,recentOrder,recentMessage} = useSelector(state=> state.dashboard)
+    const {totalSale,totalOrder,totalProduct,totalSeller,recentOrder,recentMessage,ordersToday,viewsToday} = useSelector(state=> state.dashboard)
     const {userInfo} = useSelector(state=> state.auth)
     const [pendingCount, setPendingCount] = useState(0)
     const [newsletterCount, setNewsletterCount] = useState(0)
@@ -475,10 +476,10 @@ const AdminDashboard = () => {
                         <div className='space-y-4 max-h-80 overflow-y-auto'>
                             {recentMessage.length > 0 ? recentMessage.slice(0, 4).map((m, i) => (
                                 <div key={i} className='flex items-start space-x-3 p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors'>
-                                    <img 
-                                        className='w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm' 
-                                        src={m.senderId === userInfo.id ? userInfo.image : seller} 
-                                        alt={m.senderName}
+                                    <Avatar 
+                                        type={m.senderId === '' ? "admin" : "seller"}
+                                        name={m.senderName}
+                                        size="sm"
                                     />
                                     <div className='flex-1 min-w-0'>
                                         <div className='flex items-center justify-between mb-1'>
@@ -506,14 +507,14 @@ const AdminDashboard = () => {
                                     <FaEye className='text-blue-500 mr-3' />
                                     <span className='text-sm font-medium text-gray-700'>Vues aujourd'hui</span>
                                 </div>
-                                <span className='font-bold text-blue-600'>{Math.floor(Math.random() * 500) + 200}</span>
+                                <span className='font-bold text-blue-600'>{viewsToday}</span>
                             </div>
                             <div className='flex items-center justify-between p-3 bg-green-50 rounded-lg'>
                                 <div className='flex items-center'>
                                     <FaShoppingCart className='text-green-500 mr-3' />
                                     <span className='text-sm font-medium text-gray-700'>Commandes aujourd'hui</span>
                                 </div>
-                                <span className='font-bold text-green-600'>{Math.floor(Math.random() * 50) + 10}</span>
+                                <span className='font-bold text-green-600'>{ordersToday}</span>
                             </div>
                             <div className='flex items-center justify-between p-3 bg-purple-50 rounded-lg'>
                                 <div className='flex items-center'>

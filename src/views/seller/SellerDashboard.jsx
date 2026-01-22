@@ -5,10 +5,11 @@ import { FaCartShopping } from "react-icons/fa6";
 import Chart from 'react-apexcharts'
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { get_seller_dashboard_data } from '../../store/Reducers/dashboardReducer';
+import { get_seller_dashboard_data, get_seller_monthly_data } from '../../store/Reducers/dashboardReducer';
 import moment from 'moment';
 import customer from '../../assets/demo.jpg'
 import SellerFAQ from '../../components/SellerFAQ';
+import Avatar from '../../components/Avatar';
 
 const SellerDashboard = () => {
     const [activeTab, setActiveTab] = useState('dashboard');
@@ -20,11 +21,12 @@ const SellerDashboard = () => {
     })
 
     const dispatch = useDispatch()
-    const {totalSale,totalOrder,totalProduct,totalPendingOrder,recentOrder,recentMessage} = useSelector(state=> state.dashboard)
+    const {totalSale,totalOrder,totalProduct,totalPendingOrder,recentOrder,recentMessage,ordersToday,viewsToday,monthlyData} = useSelector(state=> state.dashboard)
     const {userInfo} = useSelector(state=> state.auth)
 
     useEffect(() => {
         dispatch(get_seller_dashboard_data())
+        dispatch(get_seller_monthly_data())
         
         // Calculer les tendances basées sur les vraies données
         const generateRealData = () => {
@@ -54,17 +56,17 @@ const SellerDashboard = () => {
         series: [
             {
                 name: "Commandes",
-                data: [23,34,45,56,76,34,23,76,87,78,34,totalOrder || 45],
+                data: monthlyData.length > 0 ? monthlyData.map(m => m.orders) : [0,0,0,0,0,0,0,0,0,0,0,0],
                 color: '#3b82f6'
             },
             {
                 name: "Revenue (K FCFA)",
-                data: [67,39,45,56,90,56,23,56,87,78,67,Math.floor((totalSale || 78000)/1000)],
+                data: monthlyData.length > 0 ? monthlyData.map(m => m.revenue) : [0,0,0,0,0,0,0,0,0,0,0,0],
                 color: '#10b981'
             },
             {
                 name: "Produits",
-                data: [34,39,56,56,80,67,23,56,98,78,45,totalProduct || 56],
+                data: monthlyData.length > 0 ? monthlyData.map(m => m.products) : [0,0,0,0,0,0,0,0,0,0,0,0],
                 color: '#f59e0b'
             }
         ],
@@ -316,10 +318,11 @@ const SellerDashboard = () => {
                                 <div className='space-y-4 max-h-80 overflow-y-auto'>
                                     {recentMessage.length > 0 ? recentMessage.slice(0, 4).map((m, i) => (
                                         <div key={i} className='flex items-start space-x-3 p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors'>
-                                            <img 
-                                                className='w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm' 
-                                                src={m.senderId === userInfo._id ? userInfo.image : customer} 
-                                                alt={m.senderName}
+                                            <Avatar 
+                                                type={m.senderId === userInfo._id ? "seller" : "customer"}
+                                                image={m.senderId === userInfo._id ? userInfo.image : null}
+                                                name={m.senderName}
+                                                size="sm"
                                             />
                                             <div className='flex-1 min-w-0'>
                                                 <div className='flex items-center justify-between mb-1'>
@@ -347,14 +350,14 @@ const SellerDashboard = () => {
                                             <FaEye className='text-blue-500 mr-3' />
                                             <span className='text-sm font-medium text-gray-700'>Vues aujourd'hui</span>
                                         </div>
-                                        <span className='font-bold text-blue-600'>{Math.floor(Math.random() * 200) + 50}</span>
+                                        <span className='font-bold text-blue-600'>{viewsToday}</span>
                                     </div>
                                     <div className='flex items-center justify-between p-3 bg-green-50 rounded-lg'>
                                         <div className='flex items-center'>
                                             <FaShoppingCart className='text-green-500 mr-3' />
                                             <span className='text-sm font-medium text-gray-700'>Commandes aujourd'hui</span>
                                         </div>
-                                        <span className='font-bold text-green-600'>{Math.floor(Math.random() * 20) + 5}</span>
+                                        <span className='font-bold text-green-600'>{ordersToday}</span>
                                     </div>
                                 </div>
                             </div>

@@ -3,6 +3,7 @@ import { FaList } from 'react-icons/fa6';
 import { IoMdClose } from "react-icons/io";
 import { useDispatch, useSelector } from 'react-redux';
 import { get_admin_message, get_sellers, send_message_seller_admin ,messageClear, updateSellerMessage} from '../../store/Reducers/chatReducer'
+import { clear_admin_chat_counts_backend } from '../../store/Reducers/dashboardReducer';
 import { useMarkNotificationsRead } from '../../hooks/useMarkNotificationsRead';
 import { Link, useParams } from 'react-router-dom';
 import { FaRegFaceGrinHearts } from "react-icons/fa6";
@@ -28,6 +29,8 @@ const ChatSeller = () => {
         dispatch(get_sellers())
         // Déclencher le rafraîchissement des notifications quand on accède à la page
         window.dispatchEvent(new CustomEvent('refreshNotifications'));
+        // Effacer toutes les notifications au chargement de la page
+        dispatch(clear_admin_chat_counts_backend({}))
     }, [dispatch])
 
     const send = (e) => {

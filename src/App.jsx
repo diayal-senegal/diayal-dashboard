@@ -11,18 +11,22 @@ function App() {
     const { token } = useSelector(state => state.auth)
 
     const [allRoutes, setAllRoutes] = useState([...publicRoutes])
-    // console.log(allRoutes)
 
     useEffect(() => {
         const routes = getRoutes() || []
         setAllRoutes([...publicRoutes,...routes])
     },[])
 
+    // Vérifier l'authentification au démarrage (cookie httpOnly)
+    useEffect(() => {
+        dispatch(get_user_info())
+    }, [dispatch])
+
+    // Recharger les infos si le token change (après login)
     useEffect(() => {
         if (token) {
             dispatch(get_user_info())
         }
-
     },[token,dispatch])
 
 

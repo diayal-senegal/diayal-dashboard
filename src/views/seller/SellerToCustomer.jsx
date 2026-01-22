@@ -3,7 +3,7 @@ import { FaList } from 'react-icons/fa6';
 import { IoMdClose } from "react-icons/io";
 import { useDispatch, useSelector } from 'react-redux';
 import { get_customer_message, get_customers,messageClear,send_message,updateMessage } from '../../store/Reducers/chatReducer';
-import { clearChatCounts } from '../../store/Reducers/sellerReducer';
+import { clearChatCounts, clear_chat_counts_backend } from '../../store/Reducers/sellerReducer';
 import { Link, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import Avatar from '../../components/Avatar';
@@ -27,8 +27,6 @@ const SellerToCustomer = () => {
 
     useEffect(() => {
         dispatch(get_customers(userInfo._id))
-        // Marquer les notifications de chat client comme lues
-        dispatch(clearChatCounts({ type: 'customer' }))
     },[dispatch,userInfo._id])
 
     useEffect(() => {
@@ -36,6 +34,13 @@ const SellerToCustomer = () => {
             dispatch(get_customer_message(customerId))
         }
     },[customerId,dispatch])
+
+    useEffect(() => {
+        // Marquer les notifications de chat client comme lues quand les messages sont affichés
+        if (customerId && messages.length > 0) {
+            dispatch(clear_chat_counts_backend({ type: 'customer' }))
+        }
+    },[customerId, messages.length, dispatch])
 
     const send = (e) => {
         e.preventDefault() 

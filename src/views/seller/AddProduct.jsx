@@ -183,35 +183,35 @@ const AddProduct = () => {
     }
 
     if (artisanSheet.materials?.length) {
-      lines.push(`🧵 Matériaux : ${artisanSheet.materials.join(", ")}.`);
+      lines.push(` Matériaux : ${artisanSheet.materials.join(", ")}.`);
     }
 
     if (artisanSheet.technique) {
-      lines.push(`🛠️ Technique : ${artisanSheet.technique}.`);
+      lines.push(` Technique : ${artisanSheet.technique}.`);
     }
 
     if (artisanSheet.colors?.trim()) {
-      lines.push(`🎨 Couleur(s) : ${artisanSheet.colors.trim()}.`);
+      lines.push(` Couleur(s) : ${artisanSheet.colors.trim()}.`);
     }
 
     if (artisanSheet.size?.trim()) {
-      lines.push(`📏 Dimensions / Taille : ${artisanSheet.size.trim()}.`);
+      lines.push(` Dimensions / Taille : ${artisanSheet.size.trim()}.`);
     }
 
     if (artisanSheet.usage?.length) {
-      lines.push(`🎯 Usage : ${artisanSheet.usage.join(", ")}.`);
+      lines.push(` Usage : ${artisanSheet.usage.join(", ")}.`);
     }
 
     if (isUniqueItem) {
-      lines.push("✨ Pièce unique : vous recevrez exactement l'article présenté.");
+      lines.push(" Pièce unique : vous recevrez exactement l'article présenté.");
     } else if (artisanSheet.variations) {
-      lines.push("✨ Article artisanal : de légères variations peuvent exister (forme/couleur), c'est normal et fait partie du charme.");
+      lines.push(" Article artisanal : de légères variations peuvent exister (forme/couleur), c'est normal et fait partie du charme.");
     }
 
     if (artisanSheet.careMode === "default") {
-      lines.push("🧼 Entretien : nettoyer avec un chiffon doux, éviter le lavage agréssif à plus de 30°.");
+      lines.push(" Entretien : nettoyer avec un chiffon doux, éviter le lavage agréssif à plus de 30°.");
     } else if (artisanSheet.careMode === "custom" && artisanSheet.careCustom.trim()) {
-      lines.push(`🧼 Entretien : ${artisanSheet.careCustom.trim()}`);
+      lines.push(` Entretien : ${artisanSheet.careCustom.trim()}`);
     }
 
     const lead = artisanSheet.leadTime === "sur-commande" ? "sur commande (délais à confirmer)" : artisanSheet.leadTime;
@@ -411,9 +411,9 @@ const AddProduct = () => {
         <div className='flex flex-col md:flex-row md:justify-between md:items-center pb-4 gap-3'>
           <div>
             <h1 className='text-[#d0d2d6] text-xl font-semibold'>Ajouter un article</h1>
-            <p className="text-[#d0d2d6]/70 text-sm mt-1">
+            {/* <p className="text-[#d0d2d6]/70 text-sm mt-1">
              Création en 2 étapes : remplis la fiche, ajoute les images, puis publie.
-            </p>
+            </p> */}
           </div>
 
           <div className="flex items-center gap-2">
@@ -426,37 +426,12 @@ const AddProduct = () => {
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-2 mb-4">
+        {/* <div className="flex flex-col sm:flex-row gap-2 mb-4">
           <StepPill n={1} title="Fiche artisanale" active={step === 1} />
           <StepPill n={2} title="Prix & images" active={step === 2} />
-        </div>
+        </div> */}
 
-        <div className="mb-4 p-4 rounded-md border border-slate-700 bg-[#6a5fdf]">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-            <div>
-              <h2 className="text-[#d0d2d6] font-semibold">Qualité de la fiche</h2>
-              <p className="text-[#d0d2d6]/70 text-sm">
-                Score : <span className="text-white font-bold">{quality.score}%</span>
-                {quality.score < 70 ? " — on peut faire mieux." : " — propre 👌"}
-              </p>
-            </div>
-
-            <div className="min-w-[180px] w-full max-w-[280px]">
-              <div className="w-full h-2 bg-slate-700 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-amber-500"
-                  style={{ width: `${quality.score}%` }}
-                />
-              </div>
-              {quality.tips.length > 0 && (
-                <p className="text-xs text-[#d0d2d6]/70 mt-2">
-                  Prochaine amélioration : {quality.tips[0]}
-                </p>
-              )}
-            </div>
-          </div>
-        </div>
-
+        
         <form onSubmit={add}>
           {step === 1 && (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -730,7 +705,7 @@ const AddProduct = () => {
                         onClick={generateDescription}
                         className="px-4 py-2 rounded-md bg-amber-500 text-white hover:shadow-lg hover:shadow-amber-400/30"
                       >
-                        Générer description pro
+                        Générer la description 
                       </button>
 
                       <button
@@ -967,6 +942,34 @@ const AddProduct = () => {
             </div>
           )}
         </form>
+       <div className="mt-3 p-4 rounded-md border border-slate-700 bg-[#6a5fdf]">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div>
+              <h2 className="text-[#d0d2d6] font-semibold">Qualité de la fiche</h2>
+              <p className="text-[#d0d2d6]/70 text-sm">
+                Score : <span className="text-white font-bold">{quality.score}%</span>
+                {quality.score < 70 ? " — on peut faire mieux." : " — propre 👌"}
+              </p>
+            </div>
+
+            <div className="min-w-[180px] w-full max-w-[280px]">
+              <div className="w-full h-2 bg-slate-700 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-amber-500"
+                  style={{ width: `${quality.score}%` }}
+                />
+              </div>
+              {quality.tips.length > 0 && (
+                <p className="text-xs text-[#d0d2d6]/70 mt-2">
+                  Prochaine amélioration : {quality.tips[0]}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+
+
+
       </div>
     </div>
   );

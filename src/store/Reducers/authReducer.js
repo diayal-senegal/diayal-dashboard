@@ -183,12 +183,20 @@ export const authReducer = createSlice({
         loader: false,
         userInfo : '',
         role: '',
-        token: null
+        token: null,
+        authChecked: false
     },
     reducers : {
 
         messageClear : (state,_) => {
             state.errorMessage = ""
+        },
+        
+        resetAuth : (state) => {
+            state.userInfo = ''
+            state.role = ''
+            state.token = null
+            state.authChecked = false
         }
 
     },
@@ -239,6 +247,15 @@ export const authReducer = createSlice({
         .addCase(get_user_info.fulfilled, (state, { payload }) => {
             state.loader = false;
             state.userInfo = payload.userInfo
+            state.role = payload.userInfo.role
+            state.authChecked = true
+        })
+        .addCase(get_user_info.rejected, (state) => {
+            state.loader = false;
+            state.userInfo = ''
+            state.role = ''
+            state.token = null
+            state.authChecked = true
         })
 
         .addCase(profile_image_upload.pending, (state, { payload }) => {
@@ -303,5 +320,5 @@ export const authReducer = createSlice({
     }
 
 })
-export const {messageClear} = authReducer.actions
+export const {messageClear, resetAuth} = authReducer.actions
 export default authReducer.reducer
