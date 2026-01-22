@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { FaArrowLeft, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';
 import { PropagateLoader } from 'react-spinners';
@@ -14,6 +14,7 @@ const ResetPassword = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { loader, errorMessage, successMessage } = useSelector(state => state.auth);
+    const isFirstMount = useRef(true);
     
     const [formData, setFormData] = useState({
         password: '',
@@ -49,6 +50,7 @@ const ResetPassword = () => {
             return;
         }
 
+        isFirstMount.current = false;
         dispatch(seller_reset_password({
             token,
             password: formData.password
@@ -56,6 +58,11 @@ const ResetPassword = () => {
     };
 
     useEffect(() => {
+        // Ignorer les messages au premier montage
+        if (isFirstMount.current) {
+            return;
+        }
+        
         if (successMessage) {
             toast.success(successMessage);
             setTimeout(() => {
