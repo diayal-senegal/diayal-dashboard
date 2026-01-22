@@ -22,6 +22,11 @@ const ResetPassword = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+    // Nettoyer les messages au montage du composant
+    useEffect(() => {
+        dispatch(messageClear());
+    }, []);
+
     const handleChange = (e) => {
         setFormData({
             ...formData,

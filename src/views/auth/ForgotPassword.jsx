@@ -13,6 +13,11 @@ const ForgotPassword = () => {
     const [email, setEmail] = useState('');
     const [isSubmitted, setIsSubmitted] = useState(false);
 
+    // Nettoyer les messages au montage du composant
+    useEffect(() => {
+        dispatch(messageClear());
+    }, []);
+
     const handleSubmit = (e) => {
         e.preventDefault();
         dispatch(seller_forgot_password(email));
