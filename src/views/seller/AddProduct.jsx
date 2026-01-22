@@ -948,7 +948,7 @@ const AddProduct = () => {
               <h2 className="text-[#d0d2d6] font-semibold">Qualité de la fiche</h2>
               <p className="text-[#d0d2d6]/70 text-sm">
                 Score : <span className="text-white font-bold">{quality.score}%</span>
-                {quality.score < 70 ? " — on peut faire mieux." : " — propre 👌"}
+                {quality.score < 70 ? " — Améliorez votre fiche pour plus de visibilité." : " — propre 👌"}
               </p>
             </div>
 
