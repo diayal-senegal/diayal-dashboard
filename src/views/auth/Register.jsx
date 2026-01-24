@@ -143,8 +143,8 @@ const Register = () => {
             </label> 
         </div>
 
-        <button disabled={loader || !acceptTerms}  className={`w-full hover:shadow-lg text-white rounded-md px-7 py-2 mb-3 transition-colors duration-200 ${
-            loader || !acceptTerms ? 'bg-gray-600 cursor-not-allowed' : 'bg-slate-800 hover:shadow-blue-300/'
+        <button disabled={loader || !acceptTerms}  className={`w-full hover:shadow-lg text-white font-semibold rounded-md px-7 py-2 mb-3 transition-colors duration-200 ${
+            loader || !acceptTerms ? 'bg-green-700 cursor-not-allowed' : 'bg-green-600 hover:shadow-green-300/'
         }`}>
             {
                loader ? <PropagateLoader color='#fff' cssOverride={overrideStyle} /> : 'S\'inscrire'

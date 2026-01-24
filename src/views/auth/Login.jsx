@@ -94,7 +94,7 @@ const Login = () => {
         </div>
   
 
-        <button disabled={loader ? true : false}  className='bg-slate-800 w-full hover:shadow-blue-300/ hover:shadow-lg text-white rounded-md px-7 py-2 mb-3'>
+        <button disabled={loader ? true : false}  className='bg-slate-800 w-full hover:shadow-blue-300/ hover:shadow-lg text-white font-semibold rounded-md px-7 py-2 mb-3'>
             {
                loader ? <PropagateLoader color='#fff' cssOverride={overrideStyle} /> : 'Se connecter'
             } 
