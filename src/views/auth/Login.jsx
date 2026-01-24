@@ -109,18 +109,19 @@ const Login = () => {
                     Mot de passe oublié ?
                 </Link>
             </div>
-            <p>Vous n'avez pas de compte ? <Link className='font-bold' to="/register">S'inscrire</Link> </p> 
+            <p>Vous n'avez pas de compte ?  </p>
+            <div className='w-full'><Link className='bg-slate-800 w-full hover:shadow-blue-300/ hover:shadow-lg text-white font-semibold rounded-md px-7 py-2 mb-3  block text-center' to="/register">S'inscrire</Link></div> 
         </div>
 
-        <div className='w-full flex justify-center items-center mb-3'>
+        {/* <div className='w-full flex justify-center items-center mb-3'>
             <div className='w-[45%] bg-slate-700 h-[1px]'></div>
             <div className='w-[10%] flex justify-center items-center'>
                 <span className='pb-1'>Ou</span>
             </div>
             <div className='w-[45%] bg-slate-700 h-[1px] '></div>
-        </div>
+        </div> */}
 
-        <div className='flex justify-center items-center gap-3'>
+        {/* <div className='flex justify-center items-center gap-3'>
             <div className='w-[135px] h-[35px] flex rounded-md bg-orange-700 shadow-lg hover:shadow-orange-700/50 justify-center cursor-pointer items-center overflow-hidden'>
             <span><FaGoogle /></span>
              </div>
@@ -129,7 +130,7 @@ const Login = () => {
             <span><FaFacebook /></span>
              </div>
 
-        </div>
+        </div> */}
 
 
     </form>
