@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { FaClock, FaPercent, FaTrash, FaPlus, FaCalendarAlt } from 'react-icons/fa';
+import React, { useState, useEffect, useMemo } from 'react';
+import { FaClock, FaPercent, FaTrash, FaPlus, FaCalendarAlt, FaSearch } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 
 // API pour gérer les deals - copie locale
@@ -8,10 +8,12 @@ const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 const dealsAPI = {
     getDeals: async () => {
         const response = await fetch(`${API_BASE}/deals`);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
         return response.json();
     },
     getProducts: async () => {
         const response = await fetch(`${API_BASE}/products`);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
         return response.json();
     },
     addFlashDeal: async (productId, discount, endTime) => {
@@ -58,6 +60,7 @@ const DealsManager = () => {
     const [dealType, setDealType] = useState('flash');
     const [promotionEndTime, setPromotionEndTime] = useState('');
     const [loading, setLoading] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         fetchProducts();
@@ -68,9 +71,16 @@ const DealsManager = () => {
     const fetchProducts = async () => {
         try {
             const data = await dealsAPI.getProducts();
-            setProducts(data.products || []);
+            const productsList = data.products || data.data || data || [];
+            const validProducts = Array.isArray(productsList) ? productsList : [];
+            setProducts(validProducts);
+            
+            if (validProducts.length === 0) {
+                toast.error('Aucun produit trouvé dans la base de données');
+            }
         } catch (error) {
             console.error('Erreur produits:', error);
+            toast.error('Erreur lors du chargement des produits');
         }
     };
 
@@ -133,6 +143,7 @@ const DealsManager = () => {
             await dealsAPI.setPromotionEndTime(endTime);
             toast.success('Compteur de promotion mis à jour !');
         } catch (error) {
+            console.error('Erreur mise à jour compteur:', error);
             toast.error('Erreur lors de la mise à jour du compteur');
         }
         setLoading(false);
@@ -140,6 +151,16 @@ const DealsManager = () => {
 
     const flashDeals = deals.filter(deal => deal.type === 'flash');
     const dailyDeals = deals.filter(deal => deal.type === 'daily');
+
+    // Filtrage des produits selon la recherche
+    const filteredProducts = useMemo(() => {
+        if (!searchTerm.trim()) return products;
+        const search = searchTerm.toLowerCase();
+        return products.filter(product => 
+            product.name?.toLowerCase().includes(search) ||
+            product.price?.toString().includes(search)
+        );
+    }, [products, searchTerm]);
 
     return (
         <div className='min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 px-4 md:px-8 py-6'>
@@ -230,19 +251,36 @@ const DealsManager = () => {
                             
                             <div>
                                 <label className='block text-sm font-medium text-gray-700 mb-2'>Produit</label>
+                                <div className='relative mb-3'>
+                                    <FaSearch className='absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400' />
+                                    <input 
+                                        type="text"
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        placeholder="Rechercher un produit..."
+                                        className='w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+                                    />
+                                </div>
                                 <select 
                                     value={selectedProduct} 
                                     onChange={(e) => setSelectedProduct(e.target.value)}
                                     className='w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
                                     required
                                 >
-                                    <option value="">Sélectionner un produit</option>
-                                    {products.map(product => (
-                                        <option key={product._id} value={product._id}>
-                                            {product.name} - {product.price} FCFA
-                                        </option>
-                                    ))}
+                                    <option value="">Sélectionner un produit ({filteredProducts.length})</option>
+                                    {filteredProducts.length > 0 ? (
+                                        filteredProducts.map(product => (
+                                            <option key={product._id || product.id} value={product._id || product.id}>
+                                                {product.name} - {product.price} FCFA
+                                            </option>
+                                        ))
+                                    ) : (
+                                        <option disabled>Aucun produit trouvé</option>
+                                    )}
                                 </select>
+                                {products.length === 0 && (
+                                    <p className='text-sm text-red-500 mt-2'>⚠️ Aucun produit disponible. Vérifiez votre connexion API.</p>
+                                )}
                             </div>
                             
                             <button 
