@@ -76,7 +76,7 @@ const Register = () => {
                 <img className='w-full h-full' src="/images/logo.svg" alt="Diayal logo" />
             </div>
                 <h2 className='text-xl mb-3 font-bold'>Bienvenue sur Diayal</h2>
-                <p className='text-sm mb-3 font-medium'>Merci de vous insrire</p>
+                <p className='text-sm mb-3 font-medium'>Merci de vous inscrire</p>
 
     <form onSubmit={submit}>
         <div className='flex flex-col w-full gap-1 mb-3'>
