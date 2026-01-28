@@ -41,7 +41,7 @@ const DeliveryQueue = () => {
                 limit: '100'
             });
 
-            const response = await fetch(`${API_URL}/api/admin/deliveries?${params}`, {
+            const response = await fetch(`${API_URL}/admin/deliveries?${params}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -62,7 +62,7 @@ const DeliveryQueue = () => {
 
     const loadAvailableCouriers = async () => {
         try {
-            const response = await fetch(`${API_URL}/api/admin/couriers`, {
+            const response = await fetch(`${API_URL}/admin/couriers`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
@@ -80,7 +80,7 @@ const DeliveryQueue = () => {
 
         setLoading(true);
         try {
-            const response = await fetch(`${API_URL}/api/admin/deliveries/${selectedDelivery._id}/assign`, {
+            const response = await fetch(`${API_URL}/admin/deliveries/${selectedDelivery._id}/assign`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,

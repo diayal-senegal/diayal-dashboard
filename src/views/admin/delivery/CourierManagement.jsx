@@ -37,7 +37,7 @@ const CourierManagement = () => {
                 ...(filters.zone && { zone: filters.zone })
             });
 
-            const response = await fetch(`${API_URL}/api/admin/couriers?${params}`, {
+            const response = await fetch(`${API_URL}/admin/couriers?${params}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -46,8 +46,9 @@ const CourierManagement = () => {
             const data = await response.json();
             if (response.ok) {
                 // Adapter le format de la réponse
-                const formattedCouriers = (data || []).map(c => ({
-                    id: c._id,
+                const couriersData = Array.isArray(data) ? data : (data.couriers || data.data || []);
+                const formattedCouriers = couriersData.map(c => ({
+                    id: c._id || c.id,
                     name: c.name,
                     phone: c.phone,
                     availability: c.isAvailable ? 'AVAILABLE' : 'OFFLINE',
@@ -56,10 +57,14 @@ const CourierManagement = () => {
                     lastLocation: null,
                     vehicle: { type: c.vehicleType, plate: '' }
                 }));
-                setCouriers(formattedCouriers || []);
+                setCouriers(formattedCouriers);
+            } else {
+                console.error('Erreur API:', data.message || 'Erreur inconnue');
+                setCouriers([]);
             }
         } catch (error) {
             console.error('Erreur chargement couriers:', error);
+            setCouriers([]);
         }
     };
 
@@ -82,7 +87,7 @@ const CourierManagement = () => {
 
         setLoading(true);
         try {
-            const response = await fetch(`${API_URL}/api/admin/deliveries/${deliveryId}/assign`, {
+            const response = await fetch(`${API_URL}/admin/deliveries/${deliveryId}/assign`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,

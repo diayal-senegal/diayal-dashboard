@@ -22,7 +22,7 @@ const DeliveryTracking = () => {
     try {
       setLoading(true);
       const statusParam = statusFilter === 'all' ? 'PICKUP_PENDING,ASSIGNED,ACCEPTED,REJECTED,PICKED_UP,EN_ROUTE,ARRIVED,IN_TRANSIT,DELIVERED,FAILED,CANCELED' : statusFilter;
-      const response = await fetch(`${API_URL}/api/admin/deliveries?status=${statusParam}`, {
+      const response = await fetch(`${API_URL}/admin/deliveries?status=${statusParam}`, {
         credentials: 'include'
       });
       const data = await response.json();
