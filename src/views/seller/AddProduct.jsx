@@ -36,6 +36,8 @@ const AddProduct = () => {
   const [allCategory, setAllCategory] = useState([]);
   const [searchValue, setSearchValue] = useState('');
   const [isUniqueItem, setIsUniqueItem] = useState(false);
+  const [isPreOrder, setIsPreOrder] = useState(false);
+  const [preOrderDate, setPreOrderDate] = useState('');
   const [images, setImages] = useState([]);
   const [imageShow, setImageShow] = useState([]);
 
@@ -339,6 +341,8 @@ const AddProduct = () => {
     formData.append('shopName', '');
     formData.append('category', category);
     formData.append('isUniqueItem', isUniqueItem);
+    formData.append('isPreOrder', isPreOrder);
+    formData.append('preOrderDate', preOrderDate);
 
     for (let i = 0; i < images.length; i++) {
       formData.append('images', images[i]);
@@ -366,6 +370,8 @@ const AddProduct = () => {
       setCateShow(false);
       setAllCategory(categorys);
       setIsUniqueItem(false);
+      setIsPreOrder(false);
+      setPreOrderDate('');
       setImages([]);
       setImageShow([]);
       setTouchedGenerate(false);
@@ -655,7 +661,33 @@ const AddProduct = () => {
                       />
                       Pièce unique (stock = 1)
                     </label>
+
+                    <label className="flex items-center gap-2 text-[#d0d2d6] cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={isPreOrder}
+                        onChange={(e) => setIsPreOrder(e.target.checked)}
+                        className='w-4 h-4 cursor-pointer accent-amber-500'
+                      />
+                      Précommande disponible
+                    </label>
                   </div>
+
+                  {isPreOrder && (
+                    <div className="mt-3">
+                      <label className="text-[#d0d2d6] text-sm">Date de disponibilité estimée</label>
+                      <input
+                        type="date"
+                        className='mt-1 px-4 py-2 outline-none bg-[#6a5fdf] border border-slate-700 rounded-md text-[#d0d2d6] w-full'
+                        value={preOrderDate}
+                        onChange={(e) => setPreOrderDate(e.target.value)}
+                        min={new Date().toISOString().split('T')[0]}
+                      />
+                      <p className="text-xs text-[#d0d2d6]/70 mt-1">
+                        Les clients pourront commander maintenant et recevront l'article à cette date.
+                      </p>
+                    </div>
+                  )}
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
                     <div className="flex flex-col gap-1">

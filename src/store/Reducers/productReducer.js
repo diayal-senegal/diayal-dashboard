@@ -100,6 +100,22 @@ export const update_product = createAsyncThunk(
   // End Method 
 
 
+export const delete_product = createAsyncThunk(
+    'product/delete_product',
+    async( productId ,{rejectWithValue, fulfillWithValue}) => {
+        
+        try {
+             
+            const {data} = await api.delete(`/product-delete/${productId}`,{withCredentials: true}) 
+            console.log(data)
+            return fulfillWithValue(data)
+        } catch (error) {
+            return rejectWithValue(error.response.data)
+        }
+    }
+)
+
+  // End Method 
 
 
  
@@ -162,7 +178,18 @@ export const productReducer = createSlice({
             state.product = payload.product 
             state.successMessage = payload.message  
         })
- 
+
+        .addCase(delete_product.pending, (state, { payload }) => {
+            state.loader = true;
+        })
+        .addCase(delete_product.rejected, (state, { payload }) => {
+            state.loader = false;
+            state.errorMessage = payload.error
+        }) 
+        .addCase(delete_product.fulfilled, (state, { payload }) => {
+            state.loader = false;
+            state.successMessage = payload.message 
+        })
 
     }
 

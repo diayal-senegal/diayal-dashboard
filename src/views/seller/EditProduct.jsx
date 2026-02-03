@@ -39,8 +39,10 @@ const EditProduct = () => {
         price: "",
         brand: "",
         stock: ""
-    
     })
+
+    const [isPreOrder, setIsPreOrder] = useState(false)
+    const [preOrderDate, setPreOrderDate] = useState('')
 
     const inputHandle = (e) => {
         setState({
@@ -93,8 +95,10 @@ const EditProduct = () => {
             stock: product.stock
         })
         setCategory(product.category)
-        setImageShow( product.images)
-    },[product])
+        setImageShow(product.images)
+        setIsPreOrder(product.isPreOrder || false)
+        setPreOrderDate(product.preOrderDate ? new Date(product.preOrderDate).toISOString().split('T')[0] : '')
+    }, [product])
 
     useEffect(() => {
         if (categorys.length > 0) {
@@ -126,11 +130,12 @@ const EditProduct = () => {
                 price: state.price,
                 brand: state.brand,
                 stock: state.stock,
-                category:category,
-                productId: productId
+                category: category,
+                productId: productId,
+                isPreOrder: isPreOrder,
+                preOrderDate: preOrderDate
         }
         dispatch(update_product(obj))
-
     }
  
 
@@ -206,8 +211,36 @@ const EditProduct = () => {
         <div className='flex flex-col w-full gap-1 mb-5'>
                 <label htmlFor="description" className='text-[#d0d2d6]'>Déscription</label>
                 <textarea className='px-4 py-2 focus:border-indigo-500 outline-none bg-[#6a5fdf] border border-slate-700 rounded-md text-[#d0d2d6]' onChange={inputHandle} value={state.description} name='description' id='description' placeholder='Déscription' cols="10" rows="4"></textarea> 
-                
-            </div> 
+        </div>
+
+        <div className='flex flex-col mb-5 gap-3 text-[#d0d2d6]'>
+            <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                    type="checkbox"
+                    checked={isPreOrder}
+                    onChange={(e) => setIsPreOrder(e.target.checked)}
+                    className='w-4 h-4 cursor-pointer accent-amber-500'
+                />
+                Précommande disponible
+            </label>
+
+            {isPreOrder && (
+                <div className='flex flex-col gap-1'>
+                    <label htmlFor="preOrderDate">Date de disponibilité estimée</label>
+                    <input
+                        type="date"
+                        id="preOrderDate"
+                        className='px-4 py-2 focus:border-indigo-500 outline-none bg-[#6a5fdf] border border-slate-700 rounded-md text-[#d0d2d6]'
+                        value={preOrderDate}
+                        onChange={(e) => setPreOrderDate(e.target.value)}
+                        min={new Date().toISOString().split('T')[0]}
+                    />
+                    <p className="text-xs text-[#d0d2d6]/70">
+                        Les clients pourront commander maintenant et recevront l'article à cette date.
+                    </p>
+                </div>
+            )}
+        </div> 
 
             <div className='grid lg:grid-cols-4 grid-cols-1 md:grid-cols-3 sm:grid-cols-2 sm:gap-4 md:gap-4 gap-3 w-full text-[#d0d2d6] mb-4'>
                 {

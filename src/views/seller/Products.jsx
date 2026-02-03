@@ -4,18 +4,37 @@ import { Link } from 'react-router-dom';
 import Pagination from '../Pagination'; 
 import { FaEdit, FaEye, FaTrash } from 'react-icons/fa'; 
 import { useDispatch, useSelector } from 'react-redux';
-import { get_products } from '../../store/Reducers/productReducer';
+import { get_products, delete_product, messageClear } from '../../store/Reducers/productReducer';
 import { LuImageMinus } from "react-icons/lu";
+import toast from 'react-hot-toast';
 
 
 const Products = () => {
 
     const dispatch = useDispatch()
-    const { products,totalProduct} = useSelector(state=> state.product)
+    const { products, totalProduct, successMessage, errorMessage } = useSelector(state=> state.product)
    
     const [currentPage, setCurrentPage] = useState(1)
     const [searchValue, setSearchValue] = useState('')
     const [parPage, setParPage] = useState(5)
+
+    const handleDelete = (id) => {
+        if (window.confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) {
+            dispatch(delete_product(id))
+        }
+    }
+
+    useEffect(() => {
+        if (successMessage) {
+            toast.success(successMessage)
+            dispatch(messageClear())
+            dispatch(get_products({ parPage: parseInt(parPage), page: parseInt(currentPage), searchValue }))
+        }
+        if (errorMessage) {
+            toast.error(errorMessage)
+            dispatch(messageClear())
+        }
+    }, [successMessage, errorMessage, dispatch, parPage, currentPage, searchValue])
 
 
     useEffect(() => {
@@ -25,8 +44,7 @@ const Products = () => {
             searchValue
         }
         dispatch(get_products(obj))
-
-    },[searchValue, currentPage,parPage,dispatch])
+    }, [searchValue, currentPage, parPage, dispatch])
 
     return (
         <div className='px-2 lg:px-7 pt-5'>
@@ -58,6 +76,9 @@ const Products = () => {
                 <th scope='row' className='py-1 px-4 font-medium whitespace-nowrap'>{i + 1}</th>
                 <th scope='row' className='py-1 px-4 font-medium whitespace-nowrap'>
                     <img className='w-[45px] h-[45px]' src={ d.images[0]} alt="" />
+                    {d.isPreOrder && (
+                        <span className='text-xs bg-amber-500 text-white px-1 rounded'>Précommande</span>
+                    )}
                 </th>
                 <th scope='row' className='py-1 px-4 font-medium whitespace-nowrap'>{ d?.name?.slice(0,15)}...</th>
                 <th scope='row' className='py-1 px-4 font-medium whitespace-nowrap'>{ d.category }</th>
@@ -78,10 +99,10 @@ const Products = () => {
         <div className='flex justify-start items-center gap-4'>
         <Link to={`/seller/dashboard/edit-product/${d._id}`} className='p-[6px] bg-yellow-500 rounded hover:shadow-lg hover:shadow-yellow-500/50'> <FaEdit/> </Link> 
 
-        <Link to={`/seller/dashboard/add-banner/${d._id}`} className='p-[6px] bg-sky-500 rounded hover:shadow-lg hover:shadow-yellow-500/50'> <LuImageMinus /> </Link> 
+        <Link to={`/seller/dashboard/add-banner/${d._id}`} className='p-[6px] bg-sky-500 rounded hover:shadow-lg hover:shadow-sky-500/50'> <LuImageMinus /> </Link> 
 
-        <Link className='p-[6px] bg-green-500 rounded hover:shadow-lg hover:shadow-green-500/50'> <FaEye/> </Link>
-        <Link className='p-[6px] bg-red-500 rounded hover:shadow-lg hover:shadow-red-500/50'> <FaTrash/> </Link> 
+        <Link to={`/seller/dashboard/product-details/${d._id}`} className='p-[6px] bg-green-500 rounded hover:shadow-lg hover:shadow-green-500/50'> <FaEye/> </Link>
+        <button onClick={() => handleDelete(d._id)} className='p-[6px] bg-red-500 rounded hover:shadow-lg hover:shadow-red-500/50'> <FaTrash/> </button> 
         </div>
         
         </th>
