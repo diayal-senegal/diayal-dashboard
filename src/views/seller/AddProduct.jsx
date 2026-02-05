@@ -330,6 +330,7 @@ const AddProduct = () => {
     if (!state.price) return toast.error("Ajoute un prix.");
     if (!state.stock && !isUniqueItem) return toast.error("Ajoute un stock (ou coche pièce unique).");
     if (!images.length) return toast.error("Ajoute au moins une image.");
+    if (isPreOrder && !preOrderDate) return toast.error("Définis une date de disponibilité pour la précommande.");
 
     const formData = new FormData();
     formData.append('name', state.name);
@@ -674,8 +675,12 @@ const AddProduct = () => {
                   </div>
 
                   {isPreOrder && (
-                    <div className="mt-3">
-                      <label className="text-[#d0d2d6] text-sm">Date de disponibilité estimée</label>
+                    <div className="mt-3 p-3 rounded-md bg-blue-500/10 border border-blue-500/30">
+                      <p className="text-blue-300 text-xs font-semibold mb-2">⚠️ Mode Précommande activé</p>
+                      <p className="text-[#d0d2d6]/80 text-xs mb-3">
+                        Les clients paieront maintenant mais recevront l'article plus tard. Assure-toi de respecter la date promise.
+                      </p>
+                      <label className="text-[#d0d2d6] text-sm">Date de disponibilité estimée *</label>
                       <input
                         type="date"
                         className='mt-1 px-4 py-2 outline-none bg-[#6a5fdf] border border-slate-700 rounded-md text-[#d0d2d6] w-full'
@@ -684,7 +689,7 @@ const AddProduct = () => {
                         min={new Date().toISOString().split('T')[0]}
                       />
                       <p className="text-xs text-[#d0d2d6]/70 mt-1">
-                        Les clients pourront commander maintenant et recevront l'article à cette date.
+                        Cette date sera affichée au client. Sois réaliste !
                       </p>
                     </div>
                   )}
@@ -911,8 +916,13 @@ const AddProduct = () => {
                         >
                           <IoMdCloseCircle />
                         </span>
+                        {isPreOrder && (
+                          <span className='absolute top-1 left-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-2 py-1 text-xs font-bold rounded shadow-lg z-10'>
+                            PRÉCOMMANDE
+                          </span>
+                        )}
                         {isUniqueItem && (
-                          <span className='absolute top-10 left-1 bg-gradient-to-r from-amber-500 to-orange-600 text-white px-2 py-1 text-xs font-bold rounded shadow-lg z-10'>
+                          <span className='absolute bottom-1 right-1 bg-gradient-to-r from-amber-500 to-orange-600 text-white px-2 py-1 text-xs font-bold rounded shadow-lg z-10'>
                             PIÈCE UNIQUE
                           </span>
                         )}
@@ -955,6 +965,12 @@ const AddProduct = () => {
                     <p><span className="text-white font-semibold">Prix :</span> {state.price ? `${state.price}` : "—"}</p>
                     <p><span className="text-white font-semibold">Stock :</span> {isUniqueItem ? "1 (pièce unique)" : (state.stock || "—")}</p>
                     <p><span className="text-white font-semibold">Images :</span> {images.length}</p>
+                    {isPreOrder && (
+                      <p><span className="text-blue-300 font-semibold">🔵 Précommande :</span> {preOrderDate || "Date non définie"}</p>
+                    )}
+                    {isUniqueItem && (
+                      <p><span className="text-amber-300 font-semibold">⭐ Pièce unique</span></p>
+                    )}
                   </div>
 
                   <div className="mt-3">
