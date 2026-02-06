@@ -32,21 +32,33 @@ const CourierManagement = () => {
 
     const loadCouriers = async () => {
         try {
+            console.log('🔍 Chargement des coursiers...');
+            console.log('API_URL:', API_URL);
+            console.log('Token:', token ? 'Présent' : 'Absent');
+            
             const params = new URLSearchParams({
                 ...(filters.availability && { availability: filters.availability }),
                 ...(filters.zone && { zone: filters.zone })
             });
 
-            const response = await fetch(`${API_URL}/admin/couriers?${params}`, {
+            const url = `${API_URL}/admin/couriers?${params}`;
+            console.log('URL complète:', url);
+
+            const response = await fetch(url, {
+                credentials: 'include',
                 headers: {
-                    'Authorization': `Bearer ${token}`
+                    ...(token && { 'Authorization': `Bearer ${token}` })
                 }
             });
 
+            console.log('Status:', response.status);
             const data = await response.json();
+            console.log('Données reçues:', data);
+            
             if (response.ok) {
-                // Adapter le format de la réponse
                 const couriersData = Array.isArray(data) ? data : (data.couriers || data.data || []);
+                console.log('Coursiers extraits:', couriersData);
+                
                 const formattedCouriers = couriersData.map(c => ({
                     id: c._id || c.id,
                     name: c.name,
@@ -57,6 +69,7 @@ const CourierManagement = () => {
                     lastLocation: null,
                     vehicle: { type: c.vehicleType, plate: '' }
                 }));
+                console.log('Coursiers formatés:', formattedCouriers);
                 setCouriers(formattedCouriers);
             } else {
                 console.error('Erreur API:', data.message || 'Erreur inconnue');

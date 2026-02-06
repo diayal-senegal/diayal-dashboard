@@ -32,14 +32,18 @@ const DeliveryReassignment = () => {
       if (statusFilter !== 'ALL') params.append('status', statusFilter);
       if (zoneFilter) params.append('zone', zoneFilter);
       
-      const response = await fetch(`${API_URL}/api/admin/deliveries?${params}`, {
+      const response = await fetch(`${API_URL}/admin/deliveries?${params}`, {
         credentials: 'include'
       });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       const data = await response.json();
       setDeliveries(Array.isArray(data) ? data : (data.items || []));
     } catch (error) {
       console.error('Erreur chargement livraisons:', error);
-      toast.error('Erreur lors du chargement des livraisons');
       setDeliveries([]);
     } finally {
       setLoading(false);
@@ -48,9 +52,14 @@ const DeliveryReassignment = () => {
 
   const loadCouriers = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/admin/couriers`, {
+      const response = await fetch(`${API_URL}/admin/couriers`, {
         credentials: 'include'
       });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       const data = await response.json();
       setCouriers(Array.isArray(data) ? data : []);
     } catch (error) {
@@ -61,7 +70,7 @@ const DeliveryReassignment = () => {
 
   const loadDeliveryHistory = async (deliveryId) => {
     try {
-      const response = await fetch(`${API_URL}/api/admin/deliveries/${deliveryId}/history`, {
+      const response = await fetch(`${API_URL}/admin/deliveries/${deliveryId}/history`, {
         credentials: 'include'
       });
       const data = await response.json();
@@ -80,7 +89,7 @@ const DeliveryReassignment = () => {
 
     try {
       setLoading(true);
-      const response = await fetch(`${API_URL}/api/admin/deliveries/${selectedDelivery._id || selectedDelivery.id}/reassign`, {
+      const response = await fetch(`${API_URL}/admin/deliveries/${selectedDelivery._id || selectedDelivery.id}/reassign`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

@@ -42,9 +42,10 @@ const DeliveryQueue = () => {
             });
 
             const response = await fetch(`${API_URL}/admin/deliveries?${params}`, {
+                credentials: 'include',
                 headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    ...(token && { 'Authorization': `Bearer ${token}` })
                 }
             });
 
@@ -63,7 +64,10 @@ const DeliveryQueue = () => {
     const loadAvailableCouriers = async () => {
         try {
             const response = await fetch(`${API_URL}/admin/couriers`, {
-                headers: { 'Authorization': `Bearer ${token}` }
+                credentials: 'include',
+                headers: {
+                    ...(token && { 'Authorization': `Bearer ${token}` })
+                }
             });
 
             const data = await response.json();
@@ -82,9 +86,10 @@ const DeliveryQueue = () => {
         try {
             const response = await fetch(`${API_URL}/admin/deliveries/${selectedDelivery._id}/assign`, {
                 method: 'POST',
+                credentials: 'include',
                 headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    ...(token && { 'Authorization': `Bearer ${token}` })
                 },
                 body: JSON.stringify({ courierId, note: 'Assignation depuis la queue' })
             });
