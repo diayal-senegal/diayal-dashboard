@@ -193,7 +193,7 @@ export const allNav = [
     },     
     {
         id : 11,
-        title : 'Tous les articles',
+        title : 'Catalogue',
         icon : <MdViewList />,
         role : 'seller',
         path: '/seller/dashboard/products'
