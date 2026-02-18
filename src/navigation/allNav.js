@@ -214,7 +214,7 @@ export const allNav = [
     },
     {
         id : 14,
-        title : 'Paiements',
+        title : 'Revenus et retraits',
         icon : <MdPayment />,
         role : 'seller',
         path: '/seller/dashboard/payments'
