@@ -449,14 +449,14 @@ const SellerDashboard = () => {
                             <h2 className='text-2xl font-bold text-gray-800'>Vidéo Explicative</h2>
                         </div>
                         <div className='aspect-video bg-gray-100 rounded-xl overflow-hidden shadow-inner'>
-                            <iframe
+                            <video
                                 className='w-full h-full'
-                                src='https://www.youtube.com/embed/dQw4w9WgXcQ'
+                                controls
                                 title='Guide Vendeur'
-                                frameBorder='0'
-                                allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
-                                allowFullScreen
-                            ></iframe>
+                            >
+                                <source src='/videoEsp.mp4' type='video/mp4' />
+                                Votre navigateur ne supporte pas la lecture de vidéos.
+                            </video>
                         </div>
                         <p className='mt-4 text-gray-600 text-sm'>Cette vidéo vous guide à travers les fonctionnalités principales de votre tableau de bord vendeur.</p>
                     </div>

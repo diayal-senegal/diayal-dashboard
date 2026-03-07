@@ -7,7 +7,7 @@ import { FaImage } from "react-icons/fa";
 import { IoMdCloseCircle } from "react-icons/io";
 import { PropagateLoader } from 'react-spinners';
 import { overrideStyle } from '../../utils/utils';
-import { categoryAdd, messageClear,get_category,updateCategory,deleteCategory } from '../../store/Reducers/categoryReducer';
+import { categoryAdd, messageClear,get_category,updateCategory,deleteCategory,get_all_categories } from '../../store/Reducers/categoryReducer';
 import { useDispatch, useSelector } from 'react-redux';
 import toast from 'react-hot-toast';
 import Search from '../components/Search';
@@ -15,7 +15,7 @@ import Search from '../components/Search';
 const Category = () => {
 
     const dispatch = useDispatch()
-    const {loader,successMessage,errorMessage,categorys} = useSelector(state=> state.category)
+    const {loader,successMessage,errorMessage,categorys,allCategories} = useSelector(state=> state.category)
 
 
 
@@ -30,7 +30,8 @@ const Category = () => {
     const [state, setState] = useState({
 
         name: '',
-        image: ''
+        image: '',
+        parentCategory: ''
 
     })
 
@@ -65,7 +66,8 @@ const Category = () => {
             dispatch(messageClear()) 
             setState({
                 name: '',
-                image: ''
+                image: '',
+                parentCategory: ''
             }) 
             setImage('')
             setIsEdit(false)
@@ -81,6 +83,10 @@ const Category = () => {
     },[successMessage,errorMessage,dispatch])
    
     useEffect(() => {
+        dispatch(get_all_categories())
+    }, [dispatch])
+   
+    useEffect(() => {
         const obj = {
             parPage: parseInt(parPage),
             page: parseInt(currentPage),
@@ -94,7 +100,8 @@ const Category = () => {
     const handleEdit = (category) => {
         setState({
             name: category.name,
-            image: category.image
+            image: category.image,
+            parentCategory: category.parentCategory?._id || ''
         })
         setImage(category.image)
         setEditId(category._id)
@@ -134,6 +141,7 @@ const Category = () => {
             <th scope='col' className='py-3 px-4'>No</th>
             <th scope='col' className='py-3 px-4'>Image</th>
             <th scope='col' className='py-3 px-4'>Name</th>
+            <th scope='col' className='py-3 px-4'>Type</th>
             <th scope='col' className='py-3 px-4'>Action</th> 
         </tr>
         </thead>
@@ -145,7 +153,16 @@ const Category = () => {
                 <th scope='row' className='py-1 px-4 font-medium whitespace-nowrap'>
                     <img className='w-[45px] h-[45px]' src={d.image} alt="" />
                 </th>
-                <th scope='row' className='py-1 px-4 font-medium whitespace-nowrap'>{d.name}</th>
+                <th scope='row' className='py-1 px-4 font-medium whitespace-nowrap'>
+                    {d.level === 1 && '└─ '}{d.name}
+                </th>
+                <th scope='row' className='py-1 px-4 font-medium whitespace-nowrap'>
+                    {d.level === 0 ? (
+                        <span className='px-2 py-1 bg-blue-500 text-white text-xs rounded'>Principale</span>
+                    ) : (
+                        <span className='px-2 py-1 bg-green-500 text-white text-xs rounded'>Sous-catégorie</span>
+                    )}
+                </th>
                  
                 <th scope='row' className='py-1 px-4 font-medium whitespace-nowrap'>
                     <div className='flex justify-start items-center gap-4'>
@@ -195,6 +212,21 @@ const Category = () => {
                 <div className='flex flex-col w-full gap-1 mb-3'>
                     <label htmlFor="name"> Category Name</label>
                     <input value={state.name} onChange={(e)=>setState({...state,name : e.target.value})} className='px-4 py-2 focus:border-indigo-500 outline-none bg-[#ffffff] border border-slate-700 rounded-md text-[#000000]' type="text" id='name' name='category_name' placeholder='Category Name' />
+                 </div>
+
+                 <div className='flex flex-col w-full gap-1 mb-3'>
+                    <label htmlFor="parentCategory">Type</label>
+                    <select 
+                        value={state.parentCategory} 
+                        onChange={(e)=>setState({...state,parentCategory : e.target.value})} 
+                        className='px-4 py-2 focus:border-indigo-500 outline-none bg-[#ffffff] border border-slate-700 rounded-md text-[#000000]'
+                        id='parentCategory'
+                    >
+                        <option value=''>Catégorie Principale</option>
+                        {allCategories.filter(c => c.level === 0).map(c => (
+                            <option key={c._id} value={c._id}>Sous-catégorie de: {c.name}</option>
+                        ))}
+                    </select>
                  </div>
 
                  <div>

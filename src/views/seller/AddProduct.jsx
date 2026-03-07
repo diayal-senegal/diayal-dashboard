@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { IoMdImages, IoMdCloseCircle } from "react-icons/io";
 import { useDispatch, useSelector } from 'react-redux';
-import { get_category } from '../../store/Reducers/categoryReducer';
+import { get_category, get_subcategories } from '../../store/Reducers/categoryReducer';
 import { add_product, messageClear } from '../../store/Reducers/productReducer';
 import { PropagateLoader } from 'react-spinners';
 import { overrideStyle } from '../../utils/utils';
@@ -10,7 +10,7 @@ import toast from 'react-hot-toast';
 
 const AddProduct = () => {
   const dispatch = useDispatch();
-  const { categorys } = useSelector(state => state.category);
+  const { categorys, subcategories } = useSelector(state => state.category);
   const { loader, successMessage, errorMessage } = useSelector(state => state.product);
 
   const [state, setState] = useState({
@@ -33,6 +33,9 @@ const AddProduct = () => {
   const [touchedGenerate, setTouchedGenerate] = useState(false);
   const [cateShow, setCateShow] = useState(false);
   const [category, setCategory] = useState('');
+  const [categoryId, setCategoryId] = useState('');
+  const [subcategory, setSubcategory] = useState('');
+  const [subcategoryId, setSubcategoryId] = useState('');
   const [allCategory, setAllCategory] = useState([]);
   const [searchValue, setSearchValue] = useState('');
   const [isUniqueItem, setIsUniqueItem] = useState(false);
@@ -42,12 +45,18 @@ const AddProduct = () => {
   const [imageShow, setImageShow] = useState([]);
 
   useEffect(() => {
-    dispatch(get_category({ searchValue: '', parPage: '', page: "" }));
+    dispatch(get_category({ searchValue: '', parPage: '', page: "", parentId: 'null' }));
   }, [dispatch]);
 
   useEffect(() => {
-    setAllCategory(categorys);
+    setAllCategory(categorys.filter(c => c.level === 0));
   }, [categorys]);
+
+  useEffect(() => {
+    if (categoryId) {
+      dispatch(get_subcategories(categoryId));
+    }
+  }, [categoryId, dispatch]);
 
   useEffect(() => {
     if (isUniqueItem) {
@@ -115,6 +124,9 @@ const AddProduct = () => {
         state,
         artisanSheet,
         category,
+        categoryId,
+        subcategory,
+        subcategoryId,
         isUniqueItem,
         step,
         touchedGenerate,
@@ -142,6 +154,9 @@ const AddProduct = () => {
                     setState(parsed.state || state);
                     setArtisanSheet(parsed.artisanSheet || artisanSheet);
                     setCategory(parsed.category || '');
+                    setCategoryId(parsed.categoryId || '');
+                    setSubcategory(parsed.subcategory || '');
+                    setSubcategoryId(parsed.subcategoryId || '');
                     setIsUniqueItem(parsed.isUniqueItem || false);
                     setStep(parsed.step || 1);
                     setTouchedGenerate(parsed.touchedGenerate || false);
@@ -259,7 +274,7 @@ const AddProduct = () => {
 
   const canGoStep2 = () => {
     const okName = state.name.trim().length >= 3;
-    const okCat = !!category;
+    const okCat = !!categoryId;
     const okDesc = (state.description || "").trim().length >= 60;
     return okName && okCat && okDesc;
   };
@@ -287,7 +302,7 @@ const AddProduct = () => {
       );
       setAllCategory(srcValue);
     } else {
-      setAllCategory(categorys);
+      setAllCategory(categorys.filter(c => c.level === 0));
     }
   };
 
@@ -340,7 +355,7 @@ const AddProduct = () => {
     formData.append('discount', state.discount);
     formData.append('brand', state.brand);
     formData.append('shopName', '');
-    formData.append('category', category);
+    formData.append('category', subcategoryId || categoryId);
     formData.append('isUniqueItem', isUniqueItem);
     formData.append('isPreOrder', isPreOrder);
     formData.append('preOrderDate', preOrderDate);
@@ -367,9 +382,12 @@ const AddProduct = () => {
       });
 
       setCategory('');
+      setCategoryId('');
+      setSubcategory('');
+      setSubcategoryId('');
       setSearchValue('');
       setCateShow(false);
-      setAllCategory(categorys);
+      setAllCategory(categorys.filter(c => c.level === 0));
       setIsUniqueItem(false);
       setIsPreOrder(false);
       setPreOrderDate('');
@@ -473,7 +491,7 @@ const AddProduct = () => {
 
                 <div className='flex flex-col mb-3 md:flex-row gap-4 w-full text-[#d0d2d6]'>
                   <div className='flex flex-col w-full gap-1 relative'>
-                    <label htmlFor="category">Categorie</label>
+                    <label htmlFor="category">Catégorie principale</label>
                     <input
                       readOnly
                       onClick={() => setCateShow(!cateShow)}
@@ -481,7 +499,7 @@ const AddProduct = () => {
                       value={category}
                       type="text"
                       id='category'
-                      placeholder='-- sélectionner catégorie --'
+                      placeholder='-- sélectionner catégorie principale --'
                     />
 
                     <div className={`absolute top-[101%] left-0 bg-[#475569] w-full transition-all origin-top ${cateShow ? 'scale-100' : 'scale-0'} z-50 rounded-md border border-slate-600`}>
@@ -499,12 +517,15 @@ const AddProduct = () => {
                         {allCategory.map((c, i) => (
                           <span
                             key={i}
-                            className={`px-4 py-2 hover:bg-indigo-500 hover:text-white w-full cursor-pointer ${category === c.name ? 'bg-indigo-500 text-white' : ''}`}
+                            className={`px-4 py-2 hover:bg-indigo-500 hover:text-white w-full cursor-pointer ${categoryId === c._id ? 'bg-indigo-500 text-white' : ''}`}
                             onClick={() => {
                               setCateShow(false);
                               setCategory(c.name);
+                              setCategoryId(c._id);
+                              setSubcategory('');
+                              setSubcategoryId('');
                               setSearchValue('');
-                              setAllCategory(categorys);
+                              setAllCategory(categorys.filter(cat => cat.level === 0));
                             }}
                           >
                             {c.name}
@@ -514,24 +535,45 @@ const AddProduct = () => {
                     </div>
                   </div>
 
-                  <div className='flex flex-col w-full gap-1'>
-                    <label>Origine (optionnel)</label>
-                    <div className="flex gap-2">
-                      <input
-                        className='w-full px-4 py-2 focus:border-indigo-500 outline-none bg-[#6a5fdf] border border-slate-700 rounded-md text-[#d0d2d6]'
-                        value={artisanSheet.originCity}
-                        onChange={(e) => setSheet("originCity", e.target.value)}
-                        placeholder="Ville (ex: Dakar)"
-                        type="text"
-                      />
-                      <input
-                        className='w-full px-4 py-2 focus:border-indigo-500 outline-none bg-[#6a5fdf] border border-slate-700 rounded-md text-[#d0d2d6]'
-                        value={artisanSheet.originRegion}
-                        onChange={(e) => setSheet("originRegion", e.target.value)}
-                        placeholder="Région (ex: Dakar)"
-                        type="text"
-                      />
+                  {categoryId && subcategories.length > 0 && (
+                    <div className='flex flex-col w-full gap-1'>
+                      <label htmlFor="subcategory">Sous-catégorie (optionnel)</label>
+                      <select
+                        className='px-4 py-2 focus:border-indigo-500 outline-none bg-[#6a5fdf] border border-slate-700 rounded-md text-[#d0d2d6]'
+                        value={subcategoryId}
+                        onChange={(e) => {
+                          const selectedSub = subcategories.find(s => s._id === e.target.value);
+                          setSubcategoryId(e.target.value);
+                          setSubcategory(selectedSub ? selectedSub.name : '');
+                        }}
+                        id='subcategory'
+                      >
+                        <option value=''>-- aucune --</option>
+                        {subcategories.map((sub) => (
+                          <option key={sub._id} value={sub._id}>{sub.name}</option>
+                        ))}
+                      </select>
                     </div>
+                  )}
+                </div>
+
+                <div className='flex flex-col mb-3 w-full text-[#d0d2d6]'>
+                  <label>Origine (optionnel)</label>
+                  <div className="flex gap-2">
+                    <input
+                      className='w-full px-4 py-2 focus:border-indigo-500 outline-none bg-[#6a5fdf] border border-slate-700 rounded-md text-[#d0d2d6]'
+                      value={artisanSheet.originCity}
+                      onChange={(e) => setSheet("originCity", e.target.value)}
+                      placeholder="Ville (ex: Dakar)"
+                      type="text"
+                    />
+                    <input
+                      className='w-full px-4 py-2 focus:border-indigo-500 outline-none bg-[#6a5fdf] border border-slate-700 rounded-md text-[#d0d2d6]'
+                      value={artisanSheet.originRegion}
+                      onChange={(e) => setSheet("originRegion", e.target.value)}
+                      placeholder="Région (ex: Dakar)"
+                      type="text"
+                    />
                   </div>
                 </div>
 

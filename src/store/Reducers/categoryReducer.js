@@ -3,12 +3,15 @@ import api from "../../api/api";
 
 export const categoryAdd = createAsyncThunk(
     'category/categoryAdd',
-    async({ name,image },{rejectWithValue, fulfillWithValue}) => {
+    async({ name,image,parentCategory },{rejectWithValue, fulfillWithValue}) => {
         
         try { 
             const formData = new FormData()
             formData.append('name', name)
             formData.append('image', image)
+            if (parentCategory) {
+                formData.append('parentCategory', parentCategory)
+            }
             const {data} = await api.post('/category-add',formData,{withCredentials: true}) 
             // console.log(data)
             return fulfillWithValue(data)
@@ -23,11 +26,14 @@ export const categoryAdd = createAsyncThunk(
  
 export const get_category = createAsyncThunk(
     'category/get_category',
-    async({ parPage,page,searchValue },{rejectWithValue, fulfillWithValue}) => {
+    async({ parPage,page,searchValue,parentId },{rejectWithValue, fulfillWithValue}) => {
         
         try {
-             
-            const {data} = await api.get(`/category-get?page=${page}&&searchValue=${searchValue}&&parPage=${parPage}`,{withCredentials: true}) 
+            let url = `/category-get?page=${page}&&searchValue=${searchValue}&&parPage=${parPage}`
+            if (parentId !== undefined) {
+                url += `&&parentId=${parentId}`
+            }
+            const {data} = await api.get(url,{withCredentials: true}) 
             // console.log(data)
             return fulfillWithValue(data)
         } catch (error) {
@@ -49,18 +55,33 @@ export const get_all_categories = createAsyncThunk(
     }
 )
 
+export const get_subcategories = createAsyncThunk(
+    'category/get_subcategories',
+    async(parentId, {rejectWithValue, fulfillWithValue}) => {
+        try {
+            const {data} = await api.get(`/category-subcategories/${parentId}`, {withCredentials: true})
+            return fulfillWithValue(data)
+        } catch (error) {
+            return rejectWithValue(error.response.data)
+        }
+    }
+)
+
   // End Method 
 
   export const updateCategory = createAsyncThunk(
     'category/updateCategory',
-    async({ id, name,image },{rejectWithValue, fulfillWithValue}) => {
+    async({ id, name,image,parentCategory },{rejectWithValue, fulfillWithValue}) => {
         
         try { 
             const formData = new FormData()
             formData.append('name', name)
             if (image) {
                 formData.append('image', image)
-            } 
+            }
+            if (parentCategory !== undefined) {
+                formData.append('parentCategory', parentCategory || '')
+            }
             const {data} = await api.put(`/category-update/${id}`,formData,{withCredentials: true}) 
             // console.log(data)
             return fulfillWithValue(data)
@@ -97,6 +118,7 @@ export const categoryReducer = createSlice({
         loader: false,
         categorys : [], 
         allCategories: [],
+        subcategories: [],
         totalCategory: 0
     },
     reducers : {
@@ -130,6 +152,10 @@ export const categoryReducer = createSlice({
         
         .addCase(get_all_categories.fulfilled, (state, { payload }) => {
             state.allCategories = payload.categorys;
+        })
+
+        .addCase(get_subcategories.fulfilled, (state, { payload }) => {
+            state.subcategories = payload.subcategories;
         })
 
         .addCase(updateCategory.fulfilled, (state, { payload }) => {
