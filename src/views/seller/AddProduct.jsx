@@ -34,8 +34,10 @@ const AddProduct = () => {
   const [cateShow, setCateShow] = useState(false);
   const [category, setCategory] = useState('');
   const [categoryId, setCategoryId] = useState('');
+  const [categorySlug, setCategorySlug] = useState('');
   const [subcategory, setSubcategory] = useState('');
   const [subcategoryId, setSubcategoryId] = useState('');
+  const [subcategorySlug, setSubcategorySlug] = useState('');
   const [allCategory, setAllCategory] = useState([]);
   const [searchValue, setSearchValue] = useState('');
   const [isUniqueItem, setIsUniqueItem] = useState(false);
@@ -355,7 +357,7 @@ const AddProduct = () => {
     formData.append('discount', state.discount);
     formData.append('brand', state.brand);
     formData.append('shopName', '');
-    formData.append('category', subcategoryId || categoryId);
+    formData.append('category', subcategorySlug || categorySlug);
     formData.append('isUniqueItem', isUniqueItem);
     formData.append('isPreOrder', isPreOrder);
     formData.append('preOrderDate', preOrderDate);
@@ -383,8 +385,10 @@ const AddProduct = () => {
 
       setCategory('');
       setCategoryId('');
+      setCategorySlug('');
       setSubcategory('');
       setSubcategoryId('');
+      setSubcategorySlug('');
       setSearchValue('');
       setCateShow(false);
       setAllCategory(categorys.filter(c => c.level === 0));
@@ -522,8 +526,10 @@ const AddProduct = () => {
                               setCateShow(false);
                               setCategory(c.name);
                               setCategoryId(c._id);
+                              setCategorySlug(c.slug);
                               setSubcategory('');
                               setSubcategoryId('');
+                              setSubcategorySlug('');
                               setSearchValue('');
                               setAllCategory(categorys.filter(cat => cat.level === 0));
                             }}
@@ -545,6 +551,7 @@ const AddProduct = () => {
                           const selectedSub = subcategories.find(s => s._id === e.target.value);
                           setSubcategoryId(e.target.value);
                           setSubcategory(selectedSub ? selectedSub.name : '');
+                          setSubcategorySlug(selectedSub ? selectedSub.slug : '');
                         }}
                         id='subcategory'
                       >

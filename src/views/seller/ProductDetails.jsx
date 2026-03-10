@@ -48,7 +48,7 @@ const ProductDetails = () => {
                             </div>
                             <div>
                                 <span className='font-semibold'>Catégorie:</span>
-                                <p className='mt-1'>{product.category}</p>
+                                <p className='mt-1'>{product.category ? product.category.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : '—'}</p>
                             </div>
                             <div>
                                 <span className='font-semibold'>Marque:</span>
