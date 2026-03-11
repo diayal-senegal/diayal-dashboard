@@ -169,7 +169,7 @@ const SellerFAQ = () => {
         "Répondre rapidement aux questions des acheteurs.",
         "Respecter les délais et frais de livraison annoncés.",
         "Conserver toutes les preuves pour résoudre d'éventuels litiges.",
-        "Toujours vérifier que vos informations bancaires et personnelles sont à jour."
+        "Toujours vérifier que vos informations personnelles sont à jour."
     ];
 
     const toggleSection = (sectionId) => {
