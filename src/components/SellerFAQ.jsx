@@ -83,7 +83,7 @@ const SellerFAQ = () => {
                 },
                 {
                     q: "Quand vais-je recevoir mes paiements ?",
-                    r: "Les paiements sont sécurisés via Stripe et PayDunya/CinetPay. La réception des fonds dépend du mode de paiement choisi et des délais bancaires. Assurez-vous que vos coordonnées bancaires sont correctes pour éviter tout retard."
+                    r: "Les clients paient leurs commandes via mobile money. Après validation de la commande, Diayal vous envoie votre paiement directement sur votre numéro Wave, Orange Money ou autre service mobile money enregistré dans votre compte vendeur."
                 }
             ]
         },
